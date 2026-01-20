@@ -92,15 +92,21 @@ const Layout = () => {
               Dashboard
             </MenuItem>
 
-            <SubMenu 
-              icon={<FiBox />} 
-              label="Demands"
-              defaultOpen={location.pathname.startsWith('/demands')}
+            <MenuItem 
+              active={isActive('/batches')}
+              icon={<FiBarChart2 />} 
+              component={<Link to="/batches" />}
             >
-              <MenuItem active={isActive('/demands/pending')} component={<Link to="/demands/pending" />}>Pending</MenuItem>
-              <MenuItem active={isActive('/demands/approved')} component={<Link to="/demands/approved" />}>Approved</MenuItem>
-              <MenuItem active={isActive('/demands/received')} component={<Link to="/demands/received" />}>Received</MenuItem>
-            </SubMenu>
+              Batches
+            </MenuItem>
+
+            <MenuItem 
+              active={isActive('/demands')}
+              icon={<FiBarChart2 />} 
+              component={<Link to="/demands" />}
+            >
+              Demands
+            </MenuItem>
 
             <MenuItem 
               active={isActive('/products')}
@@ -109,16 +115,6 @@ const Layout = () => {
             >
               Products
             </MenuItem>
-
-            <SubMenu 
-              icon={<FiLayers />} 
-              label="Locations"
-              defaultOpen={location.pathname.startsWith('/locations')}
-            >
-              <MenuItem active={isActive('/locations/service-centers')} component={<Link to="/locations/service-centers" />}>Service Centers</MenuItem>
-              <MenuItem active={isActive('/locations/technicians')} component={<Link to="/locations/technicians" />}>Technicians</MenuItem>
-              <MenuItem active={isActive('/locations/dealers')} component={<Link to="/locations/dealers" />}>Dealers</MenuItem>
-            </SubMenu>
 
             <MenuItem 
               active={isActive('/users')}

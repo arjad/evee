@@ -8,7 +8,9 @@ import Profile from "./pages/Profile";
 import Products from "./pages/Products";
 import Reports from "./pages/Reports"
 import Invoices from "./pages/Invoices"
-
+import Demands from "./pages/Demands";
+import Batches from "./pages/Batches";
+import Settings from "./pages/Settings";
 function App() {
   return (
     <Router>
@@ -22,10 +24,10 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="products" element={<Products />} />
           <Route path="users" element={<Dashboard />} />
-          <Route path="demands/pending" element={<Dashboard />} />
-          <Route path="demands/approved" element={<Dashboard />} />
-          <Route path="demands/received" element={<Dashboard />} />
+          <Route path="demands" element={<Demands />} />
           <Route path="invoices" element={<Invoices />} />
+          <Route path="batches" element={<Batches />} />
+          <Route path="settings" element={<Settings />} />
 
           <Route path="reports" element={<Reports />} />
 

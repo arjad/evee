@@ -58,12 +58,12 @@ const TimePeriodStats = ({ last_7_days, last_30_days }) => {
     const isLoading = !data || data.length === 0
   
     return (
-      <div className="flex flex-col p-4 min-h-[200px] rounded-xl bg-white shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+      <div className="flex flex-col p-4 min-h-[320px] rounded-xl bg-white shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
         <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">
           {title}
         </h3>
   
-        <div className="flex-grow w-full min-h-[120px]">
+        <div className="flex-grow w-full h-[240px]">
           {isLoading ? (
             <div className="h-full w-full bg-slate-100 animate-pulse rounded" />
           ) : (
@@ -72,7 +72,7 @@ const TimePeriodStats = ({ last_7_days, last_30_days }) => {
                 <XAxis dataKey="day" />
                 <YAxis />
                 <Tooltip />
-                <Bar dataKey="value" fill="#F59E0B" barSize={20} />
+                <Bar dataKey="value" fill="#F59E0B" barSize={30} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -82,6 +82,7 @@ const TimePeriodStats = ({ last_7_days, last_30_days }) => {
       </div>
     )
   }
+  
   const PieCard = ({ title, data, subtitle }) => {
     const isLoading = !Array.isArray(data) || data.length === 0
     return (
@@ -144,24 +145,26 @@ const TimePeriodStats = ({ last_7_days, last_30_days }) => {
       </div>
 
       {/* Responsive Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* First card: Line chart */}
-        <BarCard title="Products Trend" data={barData} subtitle="Products tracked over the week" />
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  
+  {/* Chart takes 2 columns */}
+  <div className="lg:col-span-2">
+    <BarCard
+      title="Products Trend"
+      data={barData}
+      subtitle="Products tracked over the week"
+    />
+  </div>
 
-        {/* Second card: StatCard */}
-        <StatCard
-          title="Low Stock Alerts"
-          value={currentData?.low_stock_alerts}
-          subtitle="Items requiring immediate restock."
-        />
+  {/* Pie chart stays single column */}
+  <PieCard
+    title="Stock Availability Status"
+    data={pieData}
+    subtitle="Overview of inventory health and supply levels."
+  />
 
-        {/* Third card: Pie chart */}
-        <PieCard
-          title="Stock Availability Status"
-          data={pieData}
-          subtitle="Overview of inventory health and supply levels."
-        />
-      </div>
+</div>
+
     </div>
   )
 }

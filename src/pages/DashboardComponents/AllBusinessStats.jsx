@@ -82,23 +82,23 @@ const AllBusinessStats = ({
       >
 
         {renderStat(
-          'Total Pending Demands',
+          'Total Batches ',
           found,
-          'Total pending demands from all service centers.',
+          'Total batches count in warehouse.',
           'linear-gradient(105.13deg, #0B2E1F 0%, #124E35 55%, #1E7A55 100%)'
         )}
 
         {renderStat(
-          'Total Dispatched Demands',
+          'Total Products',
           removed,
-          'Dispatched demands fulfilled from all service centers.',
+          'Total products available currently in warehouse.',
           'linear-gradient(105.13deg, #002E2B 0%, #004F4A 55%, #007A73 100%)'
         )}
 
         {renderStat(
-          'Total Stock',
+          'Total Demands',
           optOutSubmitted,
-          'Total Stock in warehouses across all locations.',
+          'Total Demands from all service centers.',
           'linear-gradient(105.13deg, #0A2418 0%, #1E3D2B 55%, #355F45 100%)'
         )}
       </Box>
