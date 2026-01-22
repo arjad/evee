@@ -153,7 +153,58 @@ export const mockClaims = [
     ],
   },
 ];
-
+export const INITIAL_INVOICES = [
+  {
+    id: '114',
+    customerName: 'Classic Auto',
+    branch: 'Dharampura Branch',
+    total: 23000,
+    date: '17/01/25',
+    status: 'Paid',
+    approvedBy: null,
+    items: [
+      { id: 1, desc: '32A Battery', qty: 1, price: 11500, total: 23000 }
+    ],
+    address: 'Johar Town Branch',
+    scooterModel: 'Evee Pro',
+    regNo: 'ABC-1234',
+    serviceDate: '17/01/25'
+  },
+  {
+    id: '115',
+    customerName: 'Quick Repairs',
+    branch: 'North Hub',
+    total: 15400,
+    date: '18/01/25',
+    status: 'Pending',
+    approvedBy: null,
+    items: [
+      { id: 1, desc: 'Brake Pad Set', qty: 2, price: 4200, total: 8400 },
+      { id: 2, desc: 'LED Headlight', qty: 1, price: 7000, total: 7000 }
+    ],
+    address: 'Gulberg Area',
+    scooterModel: 'Evee Lite',
+    regNo: 'XYZ-9876',
+    serviceDate: '18/01/25'
+  },
+  {
+    id: '116',
+    customerName: 'City Logistics',
+    branch: 'Dharampura Branch',
+    total: 45000,
+    date: '19/01/25',
+    status: 'Paid',
+    approvedBy: null,
+    items: [
+      { id: 1, desc: 'Motor Hub Repair', qty: 1, price: 25000, total: 25000 },
+      { id: 2, desc: 'Controller Replacement', qty: 1, price: 20000, total: 20000 }
+    ],
+    address: 'Main Market',
+    scooterModel: 'Evee Max',
+    regNo: 'LHR-4455',
+    serviceDate: '19/01/25'
+  }
+];
 
 //// columns ////
 export const Demand_columns = [
@@ -241,4 +292,26 @@ export const Product_columns = [
 
 ];
 
+//// settings //////
+export const MOCK_CENTERS = [
+  { id: 'SC-001', name: 'West Dock Hub', location: 'Section B-12', capacity: '85%', status: 'Active', efficiency: 94 },
+  { id: 'SC-002', name: 'Cold Storage Relay', location: 'Basement-01', capacity: '42%', status: 'Under Maintenance', efficiency: 78 },
+  { id: 'SC-003', name: 'Automated Sort Facility', location: 'Roof Deck', capacity: '98%', status: 'Active', efficiency: 99 },
+  { id: 'SC-004', name: 'Hazmat Processing', location: 'Isolated Block C', capacity: '12%', status: 'Offline', efficiency: 0 },
+  { id: 'SC-005', name: 'Primary Dispatch', location: 'Main Plaza', capacity: '67%', status: 'Active', efficiency: 91 },
+];
 
+export const MOCK_TECHS = [
+  { id: 'T-10', name: 'Montgomery Scott', specialty: 'Hyperdrive Systems', rating: 4.9, completedTasks: 452, availability: 'Available', avatar: 'https://picsum.photos/seed/tech1/100/100' },
+  { id: 'T-11', name: 'Geordi La Forge', specialty: 'Sensors & Optics', rating: 5.0, completedTasks: 890, availability: 'On Assignment', avatar: 'https://picsum.photos/seed/tech2/100/100' },
+  { id: 'T-12', name: 'B’Elanna Torres', specialty: 'Structural Integrity', rating: 4.7, completedTasks: 215, availability: 'Away', avatar: 'https://picsum.photos/seed/tech3/100/100' },
+  { id: 'T-13', name: 'Miles O’Brien', specialty: 'Transporter Arrays', rating: 4.8, completedTasks: 1205, availability: 'Available', avatar: 'https://picsum.photos/seed/tech4/100/100' },
+];
+
+export const MOCK_DEALERS = [
+  { id: 'D-X1', name: 'Alpha Centauri Logistics', region: 'North Quadrant', volume: '1,200/mo', contractTier: 'Platinum', lastAudit: '2023-12-15' },
+  { id: 'D-X2', name: 'Betelgeuse Retailers', region: 'South Rim', volume: '850/mo', contractTier: 'Gold', lastAudit: '2024-01-20' },
+  { id: 'D-X3', name: 'Ganymede Distribution', region: 'Asteroid Belt', volume: '450/mo', contractTier: 'Silver', lastAudit: '2024-02-10' },
+  { id: 'D-X4', name: 'Terra Nova Supplies', region: 'Outer Core', volume: '3,400/mo', contractTier: 'Platinum', lastAudit: '2023-11-05' },
+  { id: 'D-X5', name: 'Vulcan Hardware', region: 'Sector 001', volume: '920/mo', contractTier: 'Gold', lastAudit: '2024-03-01' },
+];

@@ -1,71 +1,13 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Filter from "../components/Filter";
-
+import Filter from "../../components/Filter";
+import Heading from '../../components/TopHeading';
 import { 
-  User, 
-  MapPin, 
-  Calendar,
-  MessageSquare,
-  Send,
-  CheckCircle2,
-  Clock,
   ArrowLeft,
-  Info
 } from 'lucide-react';
-const INITIAL_INVOICES = [
-  {
-    id: '114',
-    customerName: 'Classic Auto',
-    branch: 'Dharampura Branch',
-    total: 23000,
-    date: '17/01/25',
-    status: 'Paid',
-    approvedBy: null,
-    items: [
-      { id: 1, desc: '32A Battery', qty: 1, price: 11500, total: 23000 }
-    ],
-    address: 'Johar Town Branch',
-    scooterModel: 'Evee Pro',
-    regNo: 'ABC-1234',
-    serviceDate: '17/01/25'
-  },
-  {
-    id: '115',
-    customerName: 'Quick Repairs',
-    branch: 'North Hub',
-    total: 15400,
-    date: '18/01/25',
-    status: 'Pending',
-    approvedBy: null,
-    items: [
-      { id: 1, desc: 'Brake Pad Set', qty: 2, price: 4200, total: 8400 },
-      { id: 2, desc: 'LED Headlight', qty: 1, price: 7000, total: 7000 }
-    ],
-    address: 'Gulberg Area',
-    scooterModel: 'Evee Lite',
-    regNo: 'XYZ-9876',
-    serviceDate: '18/01/25'
-  },
-  {
-    id: '116',
-    customerName: 'City Logistics',
-    branch: 'Dharampura Branch',
-    total: 45000,
-    date: '19/01/25',
-    status: 'Paid',
-    approvedBy: null,
-    items: [
-      { id: 1, desc: 'Motor Hub Repair', qty: 1, price: 25000, total: 25000 },
-      { id: 2, desc: 'Controller Replacement', qty: 1, price: 20000, total: 20000 }
-    ],
-    address: 'Main Market',
-    scooterModel: 'Evee Max',
-    regNo: 'LHR-4455',
-    serviceDate: '19/01/25'
-  }
-];
+import {INITIAL_INVOICES} from '../../MockData';
+
 
 const Invoices = () => {
   const [invoices, setInvoices] = useState(INITIAL_INVOICES);
@@ -325,41 +267,28 @@ const Invoices = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-black text-emerald-900 uppercase">
-            Invoices
-          </h2>
+      <Heading
+        title="Invoice"
+        toggleFilters={toggleFilters}
+        newButtonLink="/"
+        newButtonText="New Invoice"
+      />
 
-        <div className="flex gap-3">
-        <button
-            onClick={() => toggleFilters()}
-            className="px-6 py-2.5 bg-white border border-emerald-600 text-emerald-700 font-black text-[10px] uppercase rounded-xl"
-          >
-            Filters
-          </button>
-          <Link to="/demands/create">
-          
-            <button className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
-              New Invoices
-            </button>
-          </Link>
-        </div>
-      </div>
       <div
-  className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
-    isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
-  }`}
->  <Filter
-    dateFilter={dateFilter}
-    setDateFilter={setDateFilter}
-    fromDate={fromDate}
-    setFromDate={setFromDate}
-    toDate={toDate}
-    setToDate={setToDate}
-    statusFilter={statusFilter}
-    setStatusFilter={setStatusFilter}
-  />
-</div>
+        className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
+          isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
+        }`}
+      >  <Filter
+          dateFilter={dateFilter}
+          setDateFilter={setDateFilter}
+          fromDate={fromDate}
+          setFromDate={setFromDate}
+          toDate={toDate}
+          setToDate={setToDate}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+        />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
         {invoices.map((inv) => (

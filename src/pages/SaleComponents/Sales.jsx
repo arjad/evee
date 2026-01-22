@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import { MOCK_SALES,DemandStats, Product_Data } from '../../MockData';
 import Stats from '../../components/GeneralStats';
+import Heading from '../../components/TopHeading.jsx';
 
 const MOCK_DEMAND = {
     id: 'DM-001',
@@ -212,32 +213,21 @@ const Sales = () => {
   };
   return (
     <div className="space-y-6">
-
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-black text-emerald-900 uppercase">
-          Sales Records
-        </h2>
-
-        <div className="flex gap-3">
-          <button
-            onClick={toggleFilters}
-            className="px-6 py-2.5 bg-white border border-emerald-600 text-emerald-700 font-black text-[10px] uppercase rounded-xl"
-          >
-            Filters
-          </button>
-
-            <button onClick={()=>setIsViewOpen(true)} className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
-              New Sale +
-            </button>
-        </div>
-      </div>
+      <Heading
+        title="Sales Records"
+        toggleFilters={toggleFilters}
+        newButtonLink="/"
+        newButtonText="New Sale"
+      />
+      <button onClick={()=>setIsViewOpen(true)} className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
+        New Sale +
+      </button>
 
       <div
-  className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
-    isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
-  }`}
->
+        className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
+          isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
+        }`}
+      >
         <Filter
           dateFilter={dateFilter}
           setDateFilter={setDateFilter}
@@ -252,25 +242,22 @@ const Sales = () => {
 
       <Stats stats={DemandStats}/>
 
-
-      {/* Table */}
       <DataTable columns={columns} data={filteredSales} />
-{/* View Details Modal */}
-{isViewOpen && selectedSale && (
-  <div
-    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-    onClick={() => setIsViewOpen(false)}
-  >
-    {/* Modal Box */}
-    <div
-      className="bg-white rounded-3xl w-[95%] max-w-6xl max-h-[90vh] overflow-y-auto p-6 relative"
-      onClick={(e) => e.stopPropagation()}
-    >  <div className="flex items-center gap-4">
-    <h2 className="text-2xl font-black text-emerald-900 uppercase">
-        Sale / {122}
-    </h2>
-    </div>
-    <div 
+
+    {isViewOpen && selectedSale && (
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+        onClick={() => setIsViewOpen(false)}
+      >
+        <div
+          className="bg-white rounded-3xl w-[95%] max-w-6xl max-h-[90vh] overflow-y-auto p-6 relative"
+          onClick={(e) => e.stopPropagation()}
+        >  <div className="flex items-center gap-4">
+        <h2 className="text-2xl font-black text-emerald-900 uppercase">
+            Sale / {122}
+        </h2>
+        </div>
+        <div 
                   className="flex absolute top-4 right-4 items-center gap-2 px-4 py-2"
 >
 

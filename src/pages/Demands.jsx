@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Filter from "../components/Filter";
 import { MOCK_DEMANDS,DemandStats, Demand_columns } from '../MockData';
 import Stats from '../components/GeneralStats';
+import Heading from "../components/TopHeading";
 
 const Demands = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -55,7 +56,6 @@ const Demands = () => {
     });
   }, [dateFilter, fromDate, toDate, statusFilter]);
 
-  /* ---------------- CLEAR FILTERS ---------------- */
   const clearFilters = () => {
     setDateFilter('THIS_MONTH');
     setFromDate('');
@@ -63,54 +63,34 @@ const Demands = () => {
     setStatusFilter([]);
   };
 
-  /* ---------------- TABLE COLUMNS ---------------- */
-
-
   return (
     <div className="space-y-6">
-
-      {/* Header */}
-      <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-black text-emerald-900 uppercase">
-            Demand Records
-          </h2>
-
-        <div className="flex gap-3">
-          <button
-            onClick={() => toggleFilters()}
-            className="px-6 py-2.5 bg-white border border-emerald-600 text-emerald-700 font-black text-[10px] uppercase rounded-xl"
-          >
-            Filters
-          </button>
-          <Link to="/demands/create">
-            <button className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
-              New Demand +
-            </button>
-          </Link>
-        </div>
-      </div>
+      <Heading
+        title="Demand Records"
+        toggleFilters={toggleFilters}
+        newButtonLink="/demands/create"
+        newButtonText="New Demand"
+      />
 
       <div
-  className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
-    isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
-  }`}
->
-  <Filter
-    dateFilter={dateFilter}
-    setDateFilter={setDateFilter}
-    fromDate={fromDate}
-    setFromDate={setFromDate}
-    toDate={toDate}
-    setToDate={setToDate}
-    statusFilter={statusFilter}
-    setStatusFilter={setStatusFilter}
-  />
-</div>
+        className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
+          isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
+        }`}
+      >
+        <Filter
+          dateFilter={dateFilter}
+          setDateFilter={setDateFilter}
+          fromDate={fromDate}
+          setFromDate={setFromDate}
+          toDate={toDate}
+          setToDate={setToDate}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+        />
+      </div>
 
-<Stats stats={DemandStats}/>
+      <Stats stats={DemandStats}/>
 
-
-      {/* Table */}
       <DataTable columns={Demand_columns} data={filteredDemands} />
     </div>
   );

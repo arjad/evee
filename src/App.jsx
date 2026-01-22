@@ -7,7 +7,7 @@ import ConfirmSignup from "./pages/ConfirmSignup";
 import Profile from "./pages/Profile";
 import Products from "./pages/Products";
 import Reports from "./pages/Reports"
-import Invoices from "./pages/Invoices"
+import Invoices from "./pages/InvoiceComponents/Invoices"
 import Demands from "./pages/Demands";
 import DemandsView from "./pages/Demand/DemandView";
 import DemandCreate from "./pages/Demand/DemandCreate";

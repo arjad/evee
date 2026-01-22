@@ -1,31 +1,6 @@
 import React, { useState } from 'react';
-
-// --- Mock Data ---
-
-const MOCK_CENTERS = [
-  { id: 'SC-001', name: 'West Dock Hub', location: 'Section B-12', capacity: '85%', status: 'Active', efficiency: 94 },
-  { id: 'SC-002', name: 'Cold Storage Relay', location: 'Basement-01', capacity: '42%', status: 'Under Maintenance', efficiency: 78 },
-  { id: 'SC-003', name: 'Automated Sort Facility', location: 'Roof Deck', capacity: '98%', status: 'Active', efficiency: 99 },
-  { id: 'SC-004', name: 'Hazmat Processing', location: 'Isolated Block C', capacity: '12%', status: 'Offline', efficiency: 0 },
-  { id: 'SC-005', name: 'Primary Dispatch', location: 'Main Plaza', capacity: '67%', status: 'Active', efficiency: 91 },
-];
-
-const MOCK_TECHS = [
-  { id: 'T-10', name: 'Montgomery Scott', specialty: 'Hyperdrive Systems', rating: 4.9, completedTasks: 452, availability: 'Available', avatar: 'https://picsum.photos/seed/tech1/100/100' },
-  { id: 'T-11', name: 'Geordi La Forge', specialty: 'Sensors & Optics', rating: 5.0, completedTasks: 890, availability: 'On Assignment', avatar: 'https://picsum.photos/seed/tech2/100/100' },
-  { id: 'T-12', name: 'B’Elanna Torres', specialty: 'Structural Integrity', rating: 4.7, completedTasks: 215, availability: 'Away', avatar: 'https://picsum.photos/seed/tech3/100/100' },
-  { id: 'T-13', name: 'Miles O’Brien', specialty: 'Transporter Arrays', rating: 4.8, completedTasks: 1205, availability: 'Available', avatar: 'https://picsum.photos/seed/tech4/100/100' },
-];
-
-const MOCK_DEALERS = [
-  { id: 'D-X1', name: 'Alpha Centauri Logistics', region: 'North Quadrant', volume: '1,200/mo', contractTier: 'Platinum', lastAudit: '2023-12-15' },
-  { id: 'D-X2', name: 'Betelgeuse Retailers', region: 'South Rim', volume: '850/mo', contractTier: 'Gold', lastAudit: '2024-01-20' },
-  { id: 'D-X3', name: 'Ganymede Distribution', region: 'Asteroid Belt', volume: '450/mo', contractTier: 'Silver', lastAudit: '2024-02-10' },
-  { id: 'D-X4', name: 'Terra Nova Supplies', region: 'Outer Core', volume: '3,400/mo', contractTier: 'Platinum', lastAudit: '2023-11-05' },
-  { id: 'D-X5', name: 'Vulcan Hardware', region: 'Sector 001', volume: '920/mo', contractTier: 'Gold', lastAudit: '2024-03-01' },
-];
-
-// --- Component ---
+import Heading from '../components/TopHeading.jsx';
+import {MOCK_CENTERS, MOCK_DEALERS, MOCK_TECHS} from '../MockData.jsx';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('SERVICE_CENTERS');
@@ -150,12 +125,10 @@ const Settings = () => {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-black text-emerald-900 uppercase">
-            Settings
-          </h2>
+      <Heading
+        title="Settings"
+      />
 
-      </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
           <div className="flex bg-slate-100 p-1.5 rounded-xl border border-slate-200">

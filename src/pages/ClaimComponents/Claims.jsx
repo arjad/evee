@@ -17,12 +17,9 @@ import {
   Box,
   User,
   CreditCard,
-  ClipboardCheck
 } from 'lucide-react'
-
 import {mockClaims} from '../../MockData';
-
-
+import Heading from "../../components/TopHeading";
 
 const Claims = () => {
   const [search, setSearch] = useState("");
@@ -90,35 +87,16 @@ const Claims = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      <Heading
+        title="Claims"
+        toggleFilters={toggleFilters}
+        newButtonLink="/"
+        newButtonText="New Claim"
+      />
+      <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-all flex items-center gap-2 text-sm">
+        Create claim
+      </button>
 
-
-          <div className="flex items-center gap-4">
-            <h2 className="text-2xl font-black text-emerald-900 uppercase">
-                Claims
-            </h2>
-          </div>
-        
-        <div className="flex items-center gap-3">
-        <button 
-            onClick={handleBack}
-            className="px-4 py-2 border rounded-lg font-bold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm"
-          >
-            <ArrowLeft size={16} />
-            Back
-          </button>
-          <button
-            onClick={toggleFilters}
-            className="px-6 py-2.5 bg-white border border-emerald-600 text-emerald-700 font-black text-[10px] uppercase rounded-xl"
-          >
-            Filters
-          </button>
-          <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 shadow-lg shadow-emerald-600/20 transition-all flex items-center gap-2 text-sm">
-            Create claim
-          </button>
-        </div>
-      </div>
       <div
         className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
           isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
