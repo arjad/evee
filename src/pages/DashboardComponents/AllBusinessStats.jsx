@@ -62,11 +62,14 @@ const AllBusinessStats = ({
   return (
     <Container
       maxWidth={false}
-      sx={{ maxWidth: '100%', mt: '10px', px: '0 !important' }}
+      sx={{ maxWidth: '100%', mt: '0px', px: '0 !important' }}
     >
-      <Typography variant="h6" fontWeight={600}>
-        Inventory Stats
-      </Typography>
+   <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-black text-emerald-900 uppercase">
+            Overall Stats
+          </h2>
+
+      </div>
 
       <Box
         sx={{

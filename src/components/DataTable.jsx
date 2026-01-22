@@ -1,5 +1,6 @@
 // components/DataTable.jsx
 import React, { useMemo, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 const DataTable = ({
   columns,
@@ -180,20 +181,28 @@ const DataTable = ({
     key={`${row.id}-${col.key}`}
     className="p-4 text-sm text-slate-700 font-medium"
   >
-    {col.render
-      ? col.render(row[col.key], row) // Use render function if defined
-      : col.key === 'picture'
-      ? (
-        <img
-          src={row[col.key]}
-          alt={row.item || 'image'}
-          className="w-10 h-10 object-cover rounded-md"
-        />
-      )
-      : row[col.key] // Otherwise show the value
-    }
+    {col.key === 'item' ? (
+      <Link
+        to={`/products/view`}
+        className="text-emerald-700 font-bold hover:underline"
+      >
+        {row[col.key]}
+      </Link>
+    ) : col.key === 'picture' ? (
+      <img
+        src={row[col.key]}
+        alt={row.item || 'image'}
+        className="w-10 h-10 object-cover rounded-md cursor-pointer"
+        onClick={() => window.location.href = `/products/view`} // optional if you want picture clickable
+      />
+    ) : col.render ? (
+      col.render(row[col.key], row)
+    ) : (
+      row[col.key]
+    )}
   </td>
 ))}
+
 
 
 

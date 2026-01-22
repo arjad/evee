@@ -3,9 +3,10 @@ import { Sidebar, Menu, MenuItem, SubMenu, sidebarClasses } from "react-pro-side
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { 
   FiHome, FiBox, FiLayers, FiBarChart2, FiSettings, 
-  FiFileText, FiUsers, FiChevronLeft, FiChevronRight 
+  FiFileText, FiUsers, FiChevronLeft, FiShieldOff, FiChevronRight 
 } from "react-icons/fi";
 import Header from "./Header";
+import { Container, TextField, Avatar, Box } from "@mui/material";
 
 const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -14,7 +15,12 @@ const Layout = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-gray-50"
+    // style={{
+
+    // background: "linear-gradient(135deg, #0b1e13 0%, rgba(255, 255, 0, 0.05) 50%, rgba(255, 255, 0, 0.15) 100%)"
+    // }}
+    >
       <Sidebar
         collapsed={collapsed}
         width="260px"
@@ -27,6 +33,7 @@ const Layout = () => {
             color: "#e6f4ec",
             display: "flex",
             flexDirection: "column",
+
           },
         }}
       >
@@ -84,71 +91,87 @@ const Layout = () => {
               {!collapsed && "Collapse Sidebar"}
             </MenuItem>
 
+           
             <MenuItem 
-              active={isActive('/dashboard')}
-              icon={<FiHome />} 
-              component={<Link to="/dashboard" />}
-            >
-              Dashboard
-            </MenuItem>
+  active={isActive('/dashboard')}
+  icon={<FiHome />} 
+  component={<Link to="/dashboard" />}
+  data-testid="tab-dashboard"
+>
+  Dashboard
+</MenuItem>
 
-            <MenuItem 
-              active={isActive('/batches')}
-              icon={<FiBarChart2 />} 
-              component={<Link to="/batches" />}
-            >
-              Batches
-            </MenuItem>
+<MenuItem 
+  active={isActive('/batches')}
+  icon={<FiLayers />} 
+  component={<Link to="/batches" />}
+  data-testid="tab-batches"
+>
+  Batches
+</MenuItem>
 
-            <MenuItem 
-              active={isActive('/demands')}
-              icon={<FiBarChart2 />} 
-              component={<Link to="/demands" />}
-            >
-              Demands
-            </MenuItem>
+<MenuItem 
+  active={isActive('/demands')}
+  icon={<FiFileText />} 
+  component={<Link to="/demands" />}
+  data-testid="tab-demands"
+>
+  Demands
+</MenuItem>
 
-            <MenuItem 
-              active={isActive('/products')}
-              icon={<FiBarChart2 />} 
-              component={<Link to="/products" />}
-            >
-              Products
-            </MenuItem>
+<MenuItem 
+  active={isActive('/products')}
+  icon={<FiBox />} 
+  component={<Link to="/products" />}
+  data-testid="tab-products"
+>
+  Products
+</MenuItem>
 
-            <MenuItem 
-              active={isActive('/users')}
-              icon={<FiUsers />} 
-              component={<Link to="/users" />}
-            >
-              Users
-            </MenuItem>
+<MenuItem 
+  active={isActive('/sales')}
+  icon={<FiBarChart2 />} 
+  component={<Link to="/sales" />}
+  data-testid="tab-sales"
+>
+  Sales
+</MenuItem>
 
-            <div className="h-px bg-white/5 my-4 mx-6"></div>
+<MenuItem 
+  active={isActive('/claims')}
+  icon={<FiShieldOff />} 
+  component={<Link to="/claims" />}
+  data-testid="tab-claim"
+>
+  Claim
+</MenuItem>
 
-            <MenuItem 
-              active={isActive('/reports')}
-              icon={<FiBarChart2 />} 
-              component={<Link to="/reports" />}
-            >
-              Reports
-            </MenuItem>
+<div className="h-px bg-white/5 my-4 mx-6"></div>
 
-            <MenuItem 
-              active={isActive('/invoices')}
-              icon={<FiFileText />} 
-              component={<Link to="/invoices" />}
-            >
-              Invoices
-            </MenuItem>
 
-            <MenuItem 
-              active={isActive('/settings')}
-              icon={<FiSettings />} 
-              component={<Link to="/settings" />}
-            >
-              Settings
-            </MenuItem>
+<MenuItem 
+  active={isActive('/invoices')}
+  icon={<FiFileText />} 
+  component={<Link to="/invoices" />}
+  data-testid="tab-invoices"
+>
+  Invoices
+</MenuItem>
+
+<MenuItem 
+  active={isActive('/settings')}
+  icon={<FiSettings />} 
+  component={<Link to="/settings" />}
+  data-testid="tab-settings"
+>
+  Settings
+</MenuItem>
+
+
+
+
+
+           
           </Menu>
         </div>
 
@@ -167,12 +190,23 @@ const Layout = () => {
           </div>
         )}
       </Sidebar>
+{/* GRADIENT ACCENT */}
+<div
+  className="absolute bottom-0 right-0 w-32 h-32 pointer-events-none rounded-tl-full"
+  style={{
+    background: "linear-gradient(135deg, rgba(255,255,0,0.3), transparent 70%)",
+  }}
+></div>
 
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         <Header />
         <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
           <div className="max-w-7xl mx-auto space-y-6">
+          <Container
+      style={{ display: "flex", flexDirection:"column", minHeight: "100vh", padding: 0 }}
+    >
             <Outlet />
+            </Container>
           </div>
         </main>
       </div>

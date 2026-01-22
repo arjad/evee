@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import DataTable from '../components/DataTable';
-
+import { Link, useNavigate } from 'react-router-dom';
+import Filter from "../components/Filter";
 const MOCK_BATCHES = [
   { id: 'B-1001', batchNumber: 'LOT-2024-001', arrivalDate: '2024-05-20', productName: 'High-Tensile Steel Rods', sku: 'ST-992', quantity: 1200, unit: 'Units', status: "BatchStatus.ARRIVED", warehouseLocation: 'ZONE-A1' },
   { id: 'B-1002', batchNumber: 'LOT-2024-002', arrivalDate: '2024-05-21', productName: 'Premium Resin Pellets', sku: 'RS-442', quantity: 500, unit: 'Kg', status: "BatchStatus.IN_TRANSIT", warehouseLocation: 'BAY-04' },
@@ -12,6 +13,26 @@ const MOCK_BATCHES = [
 
 const Batches = () => {
   const [filter, setFilter] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [dateFilter, setDateFilter] = useState('THIS_MONTH');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [statusFilter, setStatusFilter] = useState([]);
+  const toggleFilters = () => {
+    setIsFilterOpen(prev => {
+      if (prev) {
+        // panel is closing → clear filters
+        clearFilters();
+      }
+      return !prev;
+    });
+  };
+  const clearFilters = () => {
+    setDateFilter('THIS_MONTH');
+    setFromDate('');
+    setToDate('');
+    setStatusFilter([]);
+  };
 
   const filteredData = useMemo(() => 
     MOCK_BATCHES.filter(b =>
@@ -66,40 +87,37 @@ const Batches = () => {
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-2 h-6 bg-emerald-500 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
-            <h2 className="text-2xl font-black text-emerald-900 uppercase tracking-tighter">
-              Batch Manifests
-            </h2>
-          </div>
-          <p className="text-emerald-600 font-bold text-[10px] uppercase tracking-widest ml-5">
-            Logistics Arrival & Inventory Sourcing
-          </p>
-        </div>
+      <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-black text-emerald-900 uppercase">
+            Batches
+          </h2>
 
-        {/* Search + New Button */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="SEARCH BATCHES/SKU..."
-              value={filter}
-              onChange={e => setFilter(e.target.value)}
-              className="pl-10 pr-4 py-2.5 bg-white border border-emerald-100 rounded-xl text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all w-64 shadow-sm"
-            />
-            <svg className="w-4 h-4 absolute left-3 top-3 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-
-          <button className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 active:scale-[0.98] transition-all whitespace-nowrap">
-            Log New Arrival +
+        <div className="flex gap-3">
+          <button
+            onClick={() => toggleFilters()}
+            className="px-6 py-2.5 bg-white border border-emerald-600 text-emerald-700 font-black text-[10px] uppercase rounded-xl"
+          >
+            Filters
           </button>
+          <Link to="/demands/create">
+            <button className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
+              New Batche
+            </button>
+          </Link>
         </div>
       </div>
-
+      {isFilterOpen && (
+  <Filter
+    dateFilter={dateFilter}
+    setDateFilter={setDateFilter}
+    fromDate={fromDate}
+    setFromDate={setFromDate}
+    toDate={toDate}
+    setToDate={setToDate}
+    statusFilter={statusFilter}
+    setStatusFilter={setStatusFilter}
+  />
+)}
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         {stats.map((stat, i) => (

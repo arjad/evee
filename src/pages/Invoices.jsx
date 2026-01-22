@@ -1,6 +1,17 @@
 
 import React, { useState } from 'react';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { 
+  User, 
+  MapPin, 
+  Calendar,
+  MessageSquare,
+  Send,
+  CheckCircle2,
+  Clock,
+  ArrowLeft,
+  Info
+} from 'lucide-react';
 const INITIAL_INVOICES = [
   {
     id: '114',
@@ -86,24 +97,30 @@ const Invoices = () => {
         : inv
     ));
   };
-
+    const navigate = useNavigate();
+  
+  const handleBack = () => {
+    navigate(-1);
+  };
   if (selectedInvoice) {
     return (
       <div className="space-y-6 animate-in fade-in duration-300">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setSelectedId(null)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors text-slate-600"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-            </button>
-            <h2 className="text-2xl font-bold text-slate-800">Invoice Details #{selectedInvoice.id}</h2>
-          </div>
+      <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-black text-emerald-900 uppercase">
+            Invoices
+          </h2>
+
+      </div>
 
           <div className="flex items-center gap-2">
+          <button 
+            onClick={handleBack}
+            className="px-4 py-2 border rounded-lg font-bold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </button>
             <button 
               onClick={handlePrint}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-slate-700 hover:bg-gray-50 transition-colors shadow-sm"
@@ -286,15 +303,19 @@ const Invoices = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between no-print">
-        <h2 className="text-2xl font-bold text-slate-800">Invoices List</h2>
-        <div className="flex gap-2">
-           <button className="px-3 py-1.5 text-xs font-bold text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 transition-colors">
-             Export CSV
-           </button>
-           <button className="px-3 py-1.5 text-xs font-bold text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors shadow-sm">
-             New Invoice
-           </button>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-black text-emerald-900 uppercase">
+            Invoices
+          </h2>
+
+        <div className="flex gap-3">
+         
+          <Link to="/demands/create">
+            <button className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
+              New Invoices
+            </button>
+          </Link>
         </div>
       </div>
 

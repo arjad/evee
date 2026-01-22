@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import DataTable from '../components/DataTable';
-
+import { Link } from 'react-router-dom';
+import Filter from "../components/Filter"
 const Products = () => {
   const columns = [
     { key: 'picture', header: 'Image', sortable: false }, // <- add this
     { key: 'sku', header: 'SKU Code', sortable: true },
     { key: 'item', header: 'Item Name', sortable: true },
     { key: 'category', header: 'Category', sortable: true },
-    { key: 'manager', header: 'In Charge', sortable: true },
-    { key: 'stockLevel', header: 'Units Left', sortable: true },
-    { key: 'priority', header: 'Fulfillment', sortable: true },
-    { key: 'lastUpdated', header: 'Last Sync', sortable: true },
+    { key: 'size', header: 'Size', sortable: true },
+    { key: 'modal', header: 'Modal', sortable: true },
+    { key: 'unit_price', header: 'Unit Price', sortable: true },
+
   ];
   
   const initialData = [
@@ -21,9 +22,9 @@ const Products = () => {
       item: 'Ethernet Hub v4',
       category: 'Hardware',
       manager: 'Sarah Chen',
-      stockLevel: 125,
-      priority: 'Low',
-      lastUpdated: '2h ago',
+      size: "samll",
+      modal: 'Low',
+      unit_price: '200',
     },
     {
       id: 2,
@@ -37,13 +38,63 @@ const Products = () => {
       lastUpdated: '10m ago',
     },
   ];
-  
-
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [dateFilter, setDateFilter] = useState('THIS_MONTH');
+    const [fromDate, setFromDate] = useState('');
+    const [toDate, setToDate] = useState('');
+    const [statusFilter, setStatusFilter] = useState([]);
+  const toggleFilters = () => {
+    setIsFilterOpen(prev => {
+      if (prev) {
+        // panel is closing → clear filters
+        clearFilters();
+      }
+      return !prev;
+    });
+  };
+  const clearFilters = () => {
+    setDateFilter('THIS_MONTH');
+    setFromDate('');
+    setToDate('');
+    setStatusFilter([]);
+  };
   return (
     <div className="space-y-6">
-      <header>...Your header JSX...</header>
+      
+      {/* Header */}
+      <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-black text-emerald-900 uppercase">
+            Products Catalog
+          </h2>
+
+        <div className="flex gap-3">
+          <button
+            onClick={() => toggleFilters()}
+            className="px-6 py-2.5 bg-white border border-emerald-600 text-emerald-700 font-black text-[10px] uppercase rounded-xl"
+          >
+            Filters
+          </button>
+          <Link to="/products/create">
+            <button className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
+              New Product
+            </button>
+          </Link>
+        </div>
+      </div>
+      {isFilterOpen && (
+  <Filter
+    dateFilter={dateFilter}
+    setDateFilter={setDateFilter}
+    fromDate={fromDate}
+    setFromDate={setFromDate}
+    toDate={toDate}
+    setToDate={setToDate}
+    statusFilter={statusFilter}
+    setStatusFilter={setStatusFilter}
+  />
+)}
+
       <DataTable columns={columns} data={initialData} />
-      <footer>...Your footer JSX...</footer>
     </div>
   );
 };

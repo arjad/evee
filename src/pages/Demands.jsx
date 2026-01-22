@@ -1,137 +1,203 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import DataTable from '../components/DataTable';
+import { Link } from 'react-router-dom';
+import Filter from "../components/Filter";
+/* ---------------- MOCK DATA ---------------- */
+const MOCK_DEMANDS = [
+  {
+    id: 'DM-001',
+    title: 'Raw Material Procurement',
+    createdBy: 'Admin',
+    serviceCenter: 'Karachi',
+    status: 'PENDING',
+    createdAt: '2026-01-21',
+  },
+  {
+    id: 'DM-002',
+    title: 'Packaging Box Order',
+    createdBy: 'Operations',
+    serviceCenter: 'Lahore',
+    status: 'DISPATCHED',
+    createdAt: '2026-01-20',
+  },
+  {
+    id: 'DM-003',
+    title: 'Label Printing Request',
+    createdBy: 'Marketing',
+    serviceCenter: 'Islamabad',
+    status: 'RECEIVED',
+    createdAt: '2026-01-19',
+  },
+  {
+    id: 'DM-004',
+    title: 'Inventory Restock',
+    createdBy: 'Warehouse',
+    serviceCenter: 'Karachi',
+    status: 'PENDING',
+    createdAt: '2026-01-18',
+  },
+];
 
+/* ---------------- COMPONENT ---------------- */
 const Demands = () => {
-  const [filter, setFilter] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [dateFilter, setDateFilter] = useState('THIS_MONTH');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [statusFilter, setStatusFilter] = useState([]);
+  const toggleFilters = () => {
+    setIsFilterOpen(prev => {
+      if (prev) {
+        // panel is closing → clear filters
+        clearFilters();
+      }
+      return !prev;
+    });
+  };
+  
+  /* ---------------- FILTER LOGIC ---------------- */
+  const filteredDemands = useMemo(() => {
+    const now = new Date();
 
-  // MOCK DATA
-  const MOCK_DEMANDS = [
-    { id: 'DM-001', title: 'Raw Material Procurement', createdBy: 'Admin', status: 'PENDING', priority: 'HIGH' },
-    { id: 'DM-002', title: 'Packaging Box Order', createdBy: 'Operations', status: 'PROCESSING', priority: 'MEDIUM' },
-    { id: 'DM-003', title: 'Label Printing Request', createdBy: 'Marketing', status: 'COMPLETED', priority: 'LOW' },
-    { id: 'DM-004', title: 'Inventory Restock', createdBy: 'Warehouse', status: 'PENDING', priority: 'HIGH' },
-  ];
+    return MOCK_DEMANDS.filter(d => {
+      const created = new Date(d.createdAt);
+      let dateMatch = true;
 
-  const filteredDemands = MOCK_DEMANDS.filter(d =>
-    d.title.toLowerCase().includes(filter.toLowerCase()) ||
-    d.id.toLowerCase().includes(filter.toLowerCase()) ||
-    d.createdBy.toLowerCase().includes(filter.toLowerCase())
-  );
+      if (dateFilter === 'TODAY') {
+        dateMatch = created.toDateString() === now.toDateString();
+      }
 
-  // Columns definition for DataTable
+      if (dateFilter === 'THIS_WEEK') {
+        const weekAgo = new Date();
+        weekAgo.setDate(now.getDate() - 7);
+        dateMatch = created >= weekAgo;
+      }
+
+      if (dateFilter === 'THIS_MONTH') {
+        dateMatch =
+          created.getMonth() === now.getMonth() &&
+          created.getFullYear() === now.getFullYear();
+      }
+
+      if (dateFilter === 'CUSTOM' && fromDate && toDate) {
+        dateMatch =
+          created >= new Date(fromDate) &&
+          created <= new Date(toDate);
+      }
+
+      const statusMatch =
+        statusFilter.length === 0 || statusFilter.includes(d.status);
+
+      return dateMatch && statusMatch;
+    });
+  }, [dateFilter, fromDate, toDate, statusFilter]);
+
+  /* ---------------- CLEAR FILTERS ---------------- */
+  const clearFilters = () => {
+    setDateFilter('THIS_MONTH');
+    setFromDate('');
+    setToDate('');
+    setStatusFilter([]);
+  };
+
+  /* ---------------- TABLE COLUMNS ---------------- */
   const columns = [
     { key: 'id', header: 'Demand ID', sortable: true },
     { key: 'title', header: 'Title', sortable: true },
     { key: 'createdBy', header: 'Created By', sortable: true },
+    { key: 'serviceCenter', header: 'Service Center', sortable: true },
     {
       key: 'status',
       header: 'Status',
       sortable: true,
-      render: (val) => (
+      render: val => (
         <span
           className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${
             val === 'PENDING'
-              ? 'bg-amber-50 text-amber-700 border-amber-100'
-              : val === 'PROCESSING'
-              ? 'bg-blue-50 text-blue-700 border-blue-100'
-              : 'bg-emerald-50 text-emerald-700 border-emerald-100'
+              ? 'bg-amber-50 text-amber-700 border-amber-200'
+              : val === 'DISPATCHED'
+              ? 'bg-blue-50 text-blue-700 border-blue-200'
+              : 'bg-emerald-50 text-emerald-700 border-emerald-200'
           }`}
         >
           {val}
         </span>
       ),
     },
-    {
-      key: 'priority',
-      header: 'Priority',
-      sortable: true,
-      render: (val) => (
-        <span
-          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${
-            val === 'HIGH'
-              ? 'bg-rose-50 text-rose-700 border-rose-100'
-              : val === 'MEDIUM'
-              ? 'bg-amber-50 text-amber-700 border-amber-100'
-              : 'bg-emerald-50 text-emerald-700 border-emerald-100'
-          }`}
-        >
-          {val}
-        </span>
-      ),
-    },
-    // New Actions column
+    { key: 'createdAt', header: 'Date', sortable: true },
+
     {
       key: 'actions',
       header: 'Actions',
-      render: (_, row) => (
-        <button
-          className="px-3 py-1 bg-emerald-600 text-white text-xs rounded-lg hover:bg-emerald-700 transition-all"
-        >
-          View Details
-        </button>
+      render: () => (
+<Link
+  to={`/demands/view`} // or your dynamic view path
+  className="px-3 py-1 text-xs font-bold border border-emerald-600 text-emerald-700 rounded-lg hover:bg-emerald-50"
+>
+  View Details
+</Link>
       ),
     },
   ];
-  
+
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-6">
+
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-2 h-6 bg-emerald-500 rounded-full" />
-            <h2 className="text-2xl font-black text-emerald-900 uppercase tracking-tight">
-              Demand Records
-            </h2>
-          </div>
-          <p className="text-emerald-600 font-bold text-[10px] uppercase tracking-widest ml-5">
-            Operational Pipeline Monitoring
-          </p>
-        </div>
+      <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-black text-emerald-900 uppercase">
+            Demand Records
+          </h2>
 
-        {/* Search & Button */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="SEARCH DEMANDS..."
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="pl-10 pr-4 py-2.5 bg-white border border-emerald-100 rounded-xl text-xs font-bold uppercase tracking-widest focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all w-64 shadow-sm"
-            />
-            <svg
-              className="w-4 h-4 absolute left-3 top-3 text-emerald-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-
-          <button className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase tracking-widest rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 active:scale-[0.98] transition-all whitespace-nowrap">
-            New Demand +
+        <div className="flex gap-3">
+          <button
+            onClick={() => toggleFilters()}
+            className="px-6 py-2.5 bg-white border border-emerald-600 text-emerald-700 font-black text-[10px] uppercase rounded-xl"
+          >
+            Filters
           </button>
+          <Link to="/demands/create">
+            <button className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
+              New Demand +
+            </button>
+          </Link>
         </div>
       </div>
+
+      {/* INLINE FILTER PANEL */}
+      {isFilterOpen && (
+  <Filter
+    dateFilter={dateFilter}
+    setDateFilter={setDateFilter}
+    fromDate={fromDate}
+    setFromDate={setFromDate}
+    toDate={toDate}
+    setToDate={setToDate}
+    statusFilter={statusFilter}
+    setStatusFilter={setStatusFilter}
+  />
+)}
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         {[
           { label: 'Total Demands', val: MOCK_DEMANDS.length, color: 'emerald' },
           { label: 'Pending', val: MOCK_DEMANDS.filter(d => d.status === 'PENDING').length, color: 'amber' },
-          { label: 'Processing', val: MOCK_DEMANDS.filter(d => d.status === 'PROCESSING').length, color: 'blue' },
-          { label: 'High Priority', val: MOCK_DEMANDS.filter(d => d.priority === 'HIGH').length, color: 'rose' },
+          { label: 'Processing', val: 0, color: 'blue' },
+          { label: 'High Priority', val: 0, color: 'rose' },
         ].map((stat, i) => (
           <div
             key={i}
             className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm"
           >
             <p className={`text-[10px] font-black uppercase tracking-widest opacity-60 mb-1 ${
-              stat.color === 'emerald' ? 'text-emerald-800' :
-              stat.color === 'amber' ? 'text-amber-800' :
-              stat.color === 'blue' ? 'text-blue-800' :
-              'text-rose-800'
+              stat.color === 'emerald'
+                ? 'text-emerald-800'
+                : stat.color === 'amber'
+                ? 'text-amber-800'
+                : stat.color === 'blue'
+                ? 'text-blue-800'
+                : 'text-rose-800'
             }`}>
               {stat.label}
             </p>
@@ -142,11 +208,6 @@ const Demands = () => {
 
       {/* Table */}
       <DataTable columns={columns} data={filteredDemands} />
-
-      {/* Footer */}
-      <p className="text-center text-[10px] font-bold text-emerald-800 uppercase tracking-[0.2em] opacity-30 py-4">
-        Terminal Session 0x02FF • Encrypted Connection • Data Sync Active
-      </p>
     </div>
   );
 };

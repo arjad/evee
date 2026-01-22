@@ -85,9 +85,7 @@ const Dashboard = () => {
   
   
   return (
-    <Container
-      style={{ display: "flex", flexDirection:"column", minHeight: "100vh", padding: 0 }}
-    >
+    <>
       {dashboardLoading ? (
         <>
           <AllBusinessStats loading />
@@ -105,7 +103,7 @@ const Dashboard = () => {
         </>
       )}
       <ActivityGraph monthlyData={monthlyData} />
-    </Container>
+    </>
   );
 };
 
