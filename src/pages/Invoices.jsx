@@ -1,6 +1,8 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import Filter from "../components/Filter";
+
 import { 
   User, 
   MapPin, 
@@ -98,7 +100,26 @@ const Invoices = () => {
     ));
   };
     const navigate = useNavigate();
-  
+      const [isFilterOpen, setIsFilterOpen] = useState(false);
+      const [dateFilter, setDateFilter] = useState('THIS_MONTH');
+      const [fromDate, setFromDate] = useState('');
+      const [toDate, setToDate] = useState('');
+      const [statusFilter, setStatusFilter] = useState([]);
+    const toggleFilters = () => {
+      setIsFilterOpen(prev => {
+        if (prev) {
+          // panel is closing → clear filters
+          clearFilters();
+        }
+        return !prev;
+      });
+    };
+    const clearFilters = () => {
+      setDateFilter('THIS_MONTH');
+      setFromDate('');
+      setToDate('');
+      setStatusFilter([]);
+    };
   const handleBack = () => {
     navigate(-1);
   };
@@ -310,14 +331,35 @@ const Invoices = () => {
           </h2>
 
         <div className="flex gap-3">
-         
+        <button
+            onClick={() => toggleFilters()}
+            className="px-6 py-2.5 bg-white border border-emerald-600 text-emerald-700 font-black text-[10px] uppercase rounded-xl"
+          >
+            Filters
+          </button>
           <Link to="/demands/create">
+          
             <button className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
               New Invoices
             </button>
           </Link>
         </div>
       </div>
+      <div
+  className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
+    isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
+  }`}
+>  <Filter
+    dateFilter={dateFilter}
+    setDateFilter={setDateFilter}
+    fromDate={fromDate}
+    setFromDate={setFromDate}
+    toDate={toDate}
+    setToDate={setToDate}
+    statusFilter={statusFilter}
+    setStatusFilter={setStatusFilter}
+  />
+</div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
         {invoices.map((inv) => (

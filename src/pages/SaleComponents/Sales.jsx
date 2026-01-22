@@ -4,57 +4,8 @@ import { Link } from 'react-router-dom';
 import Filter from "../../components/Filter";
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
-
-import { 
-  User, 
-  MapPin, 
-  Calendar,
-  MessageSquare,
-  Send,
-  CheckCircle2,
-  Clock,
-  ArrowLeft,
-  Info
-} from 'lucide-react';
-/* ---------------- MOCK DATA ---------------- */
-const MOCK_SALES = [
-  {
-    id: 'SL-001',
-    customer: 'Alpha Traders',
-    invoiceNo: 'INV-1201',
-    serviceCenter: 'Karachi',
-    amount: 125000,
-    status: 'PAID',
-    createdAt: '2026-01-21',
-  },
-  {
-    id: 'SL-002',
-    customer: 'Beta Stores',
-    invoiceNo: 'INV-1202',
-    serviceCenter: 'Lahore',
-    amount: 98000,
-    status: 'PENDING',
-    createdAt: '2026-01-20',
-  },
-  {
-    id: 'SL-003',
-    customer: 'Gamma Enterprises',
-    invoiceNo: 'INV-1203',
-    serviceCenter: 'Islamabad',
-    amount: 154500,
-    status: 'OVERDUE',
-    createdAt: '2026-01-19',
-  },
-  {
-    id: 'SL-004',
-    customer: 'Delta Mart',
-    invoiceNo: 'INV-1204',
-    serviceCenter: 'Karachi',
-    amount: 67000,
-    status: 'PAID',
-    createdAt: '2026-01-18',
-  },
-];
+import { MOCK_SALES,DemandStats, Product_Data } from '../../MockData';
+import Stats from '../../components/GeneralStats';
 
 const MOCK_DEMAND = {
     id: 'DM-001',
@@ -75,14 +26,7 @@ const MOCK_DEMAND = {
     ]
   };
 /* ---------------- HELPER ---------------- */
-const AVAILABLE_PRODUCTS = [
-    { name: 'Lithium-Ion Battery Cell', sku: 'LI-BC-2000', defaultPrice: 12.50, img: 'https://picsum.photos/40' },
-    { name: 'Aluminium Frame Rail', sku: 'AL-FR-55', defaultPrice: 45.00, img: 'https://picsum.photos/40' },
-    { name: 'Control Unit PCB', sku: 'CU-PCB-V2', defaultPrice: 85.00, img: 'https://picsum.photos/40' },
-    { name: 'Motor Housing', sku: 'MH-X1', defaultPrice: 110.00, img: 'https://picsum.photos/40' },
-    { name: 'Tire Set (14-inch)', sku: 'TR-14-SET', defaultPrice: 150.00, img: 'https://picsum.photos/40' },
-    { name: 'Brake Pad Assembly', sku: 'BRK-PAD-01', defaultPrice: 35.00, img: 'https://picsum.photos/40' },
-  ];
+
 /* ---------------- COMPONENT ---------------- */
 const Sales = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -92,12 +36,12 @@ const Sales = () => {
   const [statusFilter, setStatusFilter] = useState([]);
 
   
-  const productOptions = AVAILABLE_PRODUCTS.map(item => ({
+  const productOptions = Product_Data.map(item => ({
     value: item.name,
     label: (
       <div className="flex items-center gap-2">
-        <img src={item.img} alt={item.name} className="w-6 h-6 object-cover rounded" />
-        <span>{item.name}</span>
+        <img src={item.picture} alt={item.item} className="w-6 h-6 object-cover rounded" />
+        <span>{item.item}</span>
       </div>
     ),
     sku: item.sku,
@@ -229,7 +173,7 @@ const Sales = () => {
       if (p.id === id) {
         let updated = { ...p, [field]: value };
         if (field === 'name') {
-          const selected = AVAILABLE_PRODUCTS.find(item => item.name === value);
+          const selected = Product_Data.find(item => item.name === value);
           if (selected) {
             updated.sku = selected.sku;
             updated.unitPrice = selected.defaultPrice;
@@ -289,8 +233,11 @@ const Sales = () => {
         </div>
       </div>
 
-      {/* Filter Panel */}
-      {isFilterOpen && (
+      <div
+  className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
+    isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
+  }`}
+>
         <Filter
           dateFilter={dateFilter}
           setDateFilter={setDateFilter}
@@ -301,27 +248,10 @@ const Sales = () => {
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
         />
-      )}
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Total Sales', val: MOCK_SALES.length },
-          { label: 'Paid', val: MOCK_SALES.filter(s => s.status === 'PAID').length },
-          { label: 'Pending', val: MOCK_SALES.filter(s => s.status === 'PENDING').length },
-          { label: 'Overdue', val: MOCK_SALES.filter(s => s.status === 'OVERDUE').length },
-        ].map((stat, i) => (
-          <div
-            key={i}
-            className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm"
-          >
-            <p className="text-[10px] font-black uppercase opacity-60 mb-1">
-              {stat.label}
-            </p>
-            <p className="text-3xl font-black text-slate-900">{stat.val}</p>
-          </div>
-        ))}
       </div>
+
+      <Stats stats={DemandStats}/>
+
 
       {/* Table */}
       <DataTable columns={columns} data={filteredSales} />

@@ -2,51 +2,17 @@ import React, { useState } from 'react';
 import DataTable from '../components/DataTable';
 import { Link } from 'react-router-dom';
 import Filter from "../components/Filter"
-const Products = () => {
-  const columns = [
-    { key: 'picture', header: 'Image', sortable: false }, // <- add this
-    { key: 'sku', header: 'SKU Code', sortable: true },
-    { key: 'item', header: 'Item Name', sortable: true },
-    { key: 'category', header: 'Category', sortable: true },
-    { key: 'size', header: 'Size', sortable: true },
-    { key: 'modal', header: 'Modal', sortable: true },
-    { key: 'unit_price', header: 'Unit Price', sortable: true },
+import {Product_columns, Product_Data} from '../MockData';
 
-  ];
-  
-  const initialData = [
-    {
-      id: 1,
-      picture: 'https://picsum.photos/50?random=2',
-      sku: 'INV-001',
-      item: 'Ethernet Hub v4',
-      category: 'Hardware',
-      manager: 'Sarah Chen',
-      size: "samll",
-      modal: 'Low',
-      unit_price: '200',
-    },
-    {
-      id: 2,
-      picture: 'https://picsum.photos/50?random=2',
-      sku: 'INV-002',
-      item: 'Fiber Patch Cable',
-      category: 'Cabling',
-      manager: 'Mark Wilson',
-      stockLevel: 12,
-      priority: 'High',
-      lastUpdated: '10m ago',
-    },
-  ];
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [dateFilter, setDateFilter] = useState('THIS_MONTH');
-    const [fromDate, setFromDate] = useState('');
-    const [toDate, setToDate] = useState('');
-    const [statusFilter, setStatusFilter] = useState([]);
+const Products = () => {
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [dateFilter, setDateFilter] = useState('THIS_MONTH');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [statusFilter, setStatusFilter] = useState([]);
   const toggleFilters = () => {
     setIsFilterOpen(prev => {
       if (prev) {
-        // panel is closing → clear filters
         clearFilters();
       }
       return !prev;
@@ -60,13 +26,10 @@ const Products = () => {
   };
   return (
     <div className="space-y-6">
-      
-      {/* Header */}
       <div className="flex items-center justify-between">
           <h2 className="text-2xl font-black text-emerald-900 uppercase">
             Products Catalog
           </h2>
-
         <div className="flex gap-3">
           <button
             onClick={() => toggleFilters()}
@@ -81,20 +44,23 @@ const Products = () => {
           </Link>
         </div>
       </div>
-      {isFilterOpen && (
-  <Filter
-    dateFilter={dateFilter}
-    setDateFilter={setDateFilter}
-    fromDate={fromDate}
-    setFromDate={setFromDate}
-    toDate={toDate}
-    setToDate={setToDate}
-    statusFilter={statusFilter}
-    setStatusFilter={setStatusFilter}
-  />
-)}
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
+          isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
+        }`}
+      >  <Filter
+          dateFilter={dateFilter}
+          setDateFilter={setDateFilter}
+          fromDate={fromDate}
+          setFromDate={setFromDate}
+          toDate={toDate}
+          setToDate={setToDate}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+        />
+      </div>
 
-      <DataTable columns={columns} data={initialData} />
+      <DataTable columns={Product_columns} data={Product_Data} />
     </div>
   );
 };

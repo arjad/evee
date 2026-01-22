@@ -2,43 +2,9 @@ import React, { useState, useMemo } from 'react';
 import DataTable from '../components/DataTable';
 import { Link } from 'react-router-dom';
 import Filter from "../components/Filter";
-/* ---------------- MOCK DATA ---------------- */
-const MOCK_DEMANDS = [
-  {
-    id: 'DM-001',
-    title: 'Raw Material Procurement',
-    createdBy: 'Admin',
-    serviceCenter: 'Karachi',
-    status: 'PENDING',
-    createdAt: '2026-01-21',
-  },
-  {
-    id: 'DM-002',
-    title: 'Packaging Box Order',
-    createdBy: 'Operations',
-    serviceCenter: 'Lahore',
-    status: 'DISPATCHED',
-    createdAt: '2026-01-20',
-  },
-  {
-    id: 'DM-003',
-    title: 'Label Printing Request',
-    createdBy: 'Marketing',
-    serviceCenter: 'Islamabad',
-    status: 'RECEIVED',
-    createdAt: '2026-01-19',
-  },
-  {
-    id: 'DM-004',
-    title: 'Inventory Restock',
-    createdBy: 'Warehouse',
-    serviceCenter: 'Karachi',
-    status: 'PENDING',
-    createdAt: '2026-01-18',
-  },
-];
+import { MOCK_DEMANDS,DemandStats, Demand_columns } from '../MockData';
+import Stats from '../components/GeneralStats';
 
-/* ---------------- COMPONENT ---------------- */
 const Demands = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [dateFilter, setDateFilter] = useState('THIS_MONTH');
@@ -48,17 +14,14 @@ const Demands = () => {
   const toggleFilters = () => {
     setIsFilterOpen(prev => {
       if (prev) {
-        // panel is closing → clear filters
         clearFilters();
       }
       return !prev;
     });
   };
   
-  /* ---------------- FILTER LOGIC ---------------- */
   const filteredDemands = useMemo(() => {
     const now = new Date();
-
     return MOCK_DEMANDS.filter(d => {
       const created = new Date(d.createdAt);
       let dateMatch = true;
@@ -101,44 +64,7 @@ const Demands = () => {
   };
 
   /* ---------------- TABLE COLUMNS ---------------- */
-  const columns = [
-    { key: 'id', header: 'Demand ID', sortable: true },
-    { key: 'title', header: 'Title', sortable: true },
-    { key: 'createdBy', header: 'Created By', sortable: true },
-    { key: 'serviceCenter', header: 'Service Center', sortable: true },
-    {
-      key: 'status',
-      header: 'Status',
-      sortable: true,
-      render: val => (
-        <span
-          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase border ${
-            val === 'PENDING'
-              ? 'bg-amber-50 text-amber-700 border-amber-200'
-              : val === 'DISPATCHED'
-              ? 'bg-blue-50 text-blue-700 border-blue-200'
-              : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-          }`}
-        >
-          {val}
-        </span>
-      ),
-    },
-    { key: 'createdAt', header: 'Date', sortable: true },
 
-    {
-      key: 'actions',
-      header: 'Actions',
-      render: () => (
-<Link
-  to={`/demands/view`} // or your dynamic view path
-  className="px-3 py-1 text-xs font-bold border border-emerald-600 text-emerald-700 rounded-lg hover:bg-emerald-50"
->
-  View Details
-</Link>
-      ),
-    },
-  ];
 
   return (
     <div className="space-y-6">
@@ -164,8 +90,11 @@ const Demands = () => {
         </div>
       </div>
 
-      {/* INLINE FILTER PANEL */}
-      {isFilterOpen && (
+      <div
+  className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
+    isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
+  }`}
+>
   <Filter
     dateFilter={dateFilter}
     setDateFilter={setDateFilter}
@@ -176,38 +105,13 @@ const Demands = () => {
     statusFilter={statusFilter}
     setStatusFilter={setStatusFilter}
   />
-)}
+</div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Total Demands', val: MOCK_DEMANDS.length, color: 'emerald' },
-          { label: 'Pending', val: MOCK_DEMANDS.filter(d => d.status === 'PENDING').length, color: 'amber' },
-          { label: 'Processing', val: 0, color: 'blue' },
-          { label: 'High Priority', val: 0, color: 'rose' },
-        ].map((stat, i) => (
-          <div
-            key={i}
-            className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-sm"
-          >
-            <p className={`text-[10px] font-black uppercase tracking-widest opacity-60 mb-1 ${
-              stat.color === 'emerald'
-                ? 'text-emerald-800'
-                : stat.color === 'amber'
-                ? 'text-amber-800'
-                : stat.color === 'blue'
-                ? 'text-blue-800'
-                : 'text-rose-800'
-            }`}>
-              {stat.label}
-            </p>
-            <p className="text-3xl font-black text-slate-900">{stat.val}</p>
-          </div>
-        ))}
-      </div>
+<Stats stats={DemandStats}/>
+
 
       {/* Table */}
-      <DataTable columns={columns} data={filteredDemands} />
+      <DataTable columns={Demand_columns} data={filteredDemands} />
     </div>
   );
 };
