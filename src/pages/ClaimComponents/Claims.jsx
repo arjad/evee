@@ -20,7 +20,7 @@ import {
   ClipboardCheck
 } from 'lucide-react'
 
-import {mockClaims} from '../MockData';
+import {mockClaims} from '../../MockData';
 
 
 
