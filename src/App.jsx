@@ -16,6 +16,8 @@ import ProductCreate from "./pages/ProductComponents/ProductCreate";
 import Sales from "./pages/SaleComponents/Sales";
 import Claims from "./pages/ClaimComponents/Claims";
 import Batches from "./pages/Batches";
+import BatchesView from "./pages/BatchComponents/BatchView";
+
 import Settings from "./pages/Settings";
 function App() {
   return (
@@ -42,6 +44,7 @@ function App() {
 
           <Route path="invoices" element={<Invoices />} />
           <Route path="batches" element={<Batches />} />
+          <Route path="batch/view" element={<BatchesView />} />
           <Route path="settings" element={<Settings />} />
 
           <Route path="reports" element={<Reports />} />

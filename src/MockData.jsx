@@ -1,16 +1,18 @@
 import { Link } from "react-router-dom";
 export const BatchStats = [
-  { label: 'Total Batches', val: 66, color: 'emerald' },
-  { label: 'QC Pending', val: 'amber' },
-  { label: 'In Transit', val: 'blue' },
-  { label: 'Rejected', val: 'rose' },
+  { label: 'Batches', val: 66, color: '#EA580B' },
+  { label: 'Rejected', val: '22', color: 'emerald' },
 ];
 export const DemandStats = [
-  { label: 'Total Batches', val: 66, color: 'emerald' },
-  { label: 'QC Pending', val: 'amber' },
-  { label: 'In Transit', val: 'blue' },
-  { label: 'Rejected', val: 'rose' },
+  { label: 'Demands', val: 24, color: 'emerald' },
+  { label: 'Pending', val: 5, color: '#EA580B' },
 ];
+export const DemandChart = [
+    { name: 'PENDING', value: 5 },
+    { name: 'IN_TRANSIT', value: 12 },
+    { name: 'RECEIVED', value: 7 },
+    { name: 'REJECTED', value: 2 },
+]
 export const MOCK_SALES = [
   {
     id: 'SL-001',
@@ -49,6 +51,21 @@ export const MOCK_SALES = [
     createdAt: '2026-01-18',
   },
 ];
+// Last 6 months labels
+export const Sale_months = ['Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26'];
+
+// Mock sales totals for each month
+export const SalesChart = Sale_months.map((month, i) => ({
+  name: month,
+  value: [125000, 98000, 145000, 112000, 130000, 150000][i] // map each month to its value
+}));
+
+// Mock stats for the Sales page
+export const SalesStats = [
+  { label: 'Sales', val: 'Rs. 760,000', color: 'emerald' },
+  { label: 'Pending Amount', val: 'Rs. 90,000', color: 'amber' },
+];
+
 
 export const BATCHES = [
   { id: 'B-1001', batchNumber: 'LOT-2024a', arrivalDate: '2024-05-20', productName: 'High-Tensile Steel Rods', sku: 'ST-992', quantity: 1200, unit: 'Units', status: "ARRIVED", warehouseLocation: 'ZONE-A1' },
@@ -153,6 +170,19 @@ export const mockClaims = [
     ],
   },
 ];
+
+// Mock products
+export const MOCK_PRODUCTS = [
+  { id: 'PRD-101', name: 'Lithium-Ion Battery Cell', sku: 'LI-BC-2000', unitPrice: 12.5 },
+  { id: 'PRD-102', name: 'Aluminium Frame Rail', sku: 'AL-FR-55', unitPrice: 45 },
+  { id: 'PRD-103', name: 'Control Unit PCB', sku: 'CU-PCB-V2', unitPrice: 85 },
+  { id: 'PRD-104', name: 'Motor Housing', sku: 'MH-X1', unitPrice: 110 },
+  { id: 'PRD-105', name: 'Gearbox Assembly', sku: 'GB-A1', unitPrice: 250 },
+  { id: 'PRD-106', name: 'Cooling Fan', sku: 'CF-300', unitPrice: 30 },
+  { id: 'PRD-107', name: 'Sensor Module', sku: 'SM-77', unitPrice: 55 },
+  { id: 'PRD-108', name: 'Hydraulic Pump', sku: 'HP-9', unitPrice: 180 },
+];
+
 export const INITIAL_INVOICES = [
   {
     id: '114',
@@ -231,17 +261,16 @@ export const Demand_columns = [
     ),
   },
   { key: 'createdAt', header: 'Date', sortable: true },
-
   {
     key: 'actions',
     header: 'Actions',
     render: () => (
-<Link
-to={`/demands/view`} // or your dynamic view path
-className="px-3 py-1 text-xs font-bold border border-emerald-600 text-emerald-700 rounded-lg hover:bg-emerald-50"
->
-View Details
-</Link>
+      <Link
+        to={`/demands/view`} // or your dynamic view path
+        className="px-3 py-1 text-xs font-bold border border-emerald-600 text-emerald-700 rounded-lg hover:bg-emerald-50"
+      >
+        View Details
+      </Link>
     ),
   },
 ];
@@ -279,7 +308,49 @@ export const Batch_columns = [
       );
     }
   },
+  {
+    key: 'actions',
+    header: 'Actions',
+    render: () => (
+      <Link
+        to={`/batch/view`} // or your dynamic view path
+        className="px-3 py-1 text-xs font-bold border border-emerald-600 text-emerald-700 rounded-lg hover:bg-emerald-50"
+      >
+        Details
+      </Link>
+    ),
+  },
 ];
+
+export const batch = {
+  origin: 'China Hub Terminal',
+  destination: 'Karachi Warehouse',
+  carrier: 'China Shipping',
+};
+
+
+export const MOCK_BATCH = {
+  id: 'BT-CN-2024-8821',
+  title: 'Consumer Electronics Batch - Q1 Export',
+  status: 'Sent',
+  createdAt: '2024-01-15 08:30 AM',
+  origin: 'Shenzhen Port, China',
+  destination: 'Karachi Central Warehouse',
+  manufacturer: 'FMIMH Manufacturing Hub',
+  carrier: 'Maersk Shipping Line',
+  trackingNumber: 'MAEU449201192',
+  estimatedArrival: '2024-02-12',
+  products: [
+    { id: 'ITM-901', name: 'High-Density Solar Cells', sku: 'SC-HD-450W', quantity: 1200, weightKg: 2400, volumeCbm: 12.5, category: 'Energy' },
+    { id: 'ITM-902', name: 'Smart Inverter 5KW', sku: 'INV-SM-5K', quantity: 85, weightKg: 1105, volumeCbm: 4.2, category: 'Energy' },
+    { id: 'ITM-903', name: 'Aluminium Mounting Rails', sku: 'AL-RAIL-02', quantity: 450, weightKg: 900, volumeCbm: 8.0, category: 'Structural' },
+    { id: 'ITM-904', name: 'EV Charging Station Modules', sku: 'EV-MOD-V3', quantity: 40, weightKg: 320, volumeCbm: 1.8, category: 'Automotive' },
+  ],
+  remarksHistory: [
+    { author: 'Logistics Manager', message: 'Vessel delayed by 2 days due to weather conditions in South China Sea.', timestamp: '2024-01-20 02:15 PM' },
+    { author: 'System Admin', message: 'Batch cleared export customs in Shenzhen.', timestamp: '2024-01-16 10:00 AM' }
+  ]
+};
 
 export const Product_columns = [
   { key: 'picture', header: 'Image', sortable: false }, // <- add this
@@ -315,3 +386,58 @@ export const MOCK_DEALERS = [
   { id: 'D-X4', name: 'Terra Nova Supplies', region: 'Outer Core', volume: '3,400/mo', contractTier: 'Platinum', lastAudit: '2023-11-05' },
   { id: 'D-X5', name: 'Vulcan Hardware', region: 'Sector 001', volume: '920/mo', contractTier: 'Gold', lastAudit: '2024-03-01' },
 ];
+
+export const selectedClaim = {
+  id: "CLM-001",
+  customerName: "Ali Raza",
+  address: "House 12, Street 5, Johar Town, Lahore",
+  claimDate: "2024-01-12",
+  saleId: "SALE-7788",
+  scooterModel: "Evee S1 Pro",
+  serviceDate: "2024-01-18",
+  isApproved: true,
+  approvedBy: "Ahmed Khan",
+  serviceCenter: "Evee Service Center – Lahore",
+
+  productImage: "https://images.unsplash.com/photo-1619767886558-efdc259cde1b",
+
+  products: [
+    {
+      name: "Battery Replacement",
+      quantity: 1,
+      price: 45000
+    },
+    {
+      name: "Brake Pads",
+      quantity: 2,
+      price: 3500
+    },
+    {
+      name: "Controller Repair",
+      quantity: 1,
+      price: 12000
+    }
+  ]
+};
+
+
+export const selectedInvoice2 = {
+  id: 1,
+  invoiceNumber: "INV-001",
+  date: "2024-01-15",
+  customerName: "John Doe",
+  totalAmount: 45000,
+  status: "PAID",
+  items: [
+    {
+      name: "Screen Replacement",
+      quantity: 1,
+      price: 30000,
+    },
+    {
+      name: "Service Charges",
+      quantity: 1,
+      price: 15000,
+    },
+  ],
+};

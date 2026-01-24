@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import DataTable from '../components/DataTable';
 import Filter from "../components/Filter";
 import Stats from '../components/GeneralStats';
-import { BATCHES, BatchStats, Batch_columns } from '../MockData.jsx';
+import { BATCHES, BatchStats, Batch_columns, DemandChart } from '../MockData.jsx';
 import Heading from '../components/TopHeading.jsx';
 
 const Batches = () => {
@@ -61,7 +61,7 @@ const Batches = () => {
         />
       </div>
 
-      <Stats stats={BatchStats}/>
+      <Stats stats={BatchStats} chartData={DemandChart} chartType="bar" />
 
       <DataTable columns={Batch_columns} data={filteredData} />
     </div>

@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import Filter from "../../components/Filter";
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
-import { MOCK_SALES,DemandStats, Product_Data } from '../../MockData';
+import { MOCK_SALES,DemandStats, Product_Data, Sale_months, SalesChart, SalesStats } from '../../MockData';
 import Stats from '../../components/GeneralStats';
 import Heading from '../../components/TopHeading.jsx';
+import SaleViewModal from './SaleView.jsx';
 
 const MOCK_DEMAND = {
     id: 'DM-001',
@@ -219,9 +220,6 @@ const Sales = () => {
         newButtonLink="/"
         newButtonText="New Sale"
       />
-      <button onClick={()=>setIsViewOpen(true)} className="px-6 py-2.5 bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
-        New Sale +
-      </button>
 
       <div
         className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
@@ -240,155 +238,25 @@ const Sales = () => {
         />
       </div>
 
-      <Stats stats={DemandStats}/>
+      <Stats stats={SalesStats} chartData={SalesChart} chartType="line" />
 
       <DataTable columns={columns} data={filteredSales} />
 
-    {isViewOpen && selectedSale && (
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-        onClick={() => setIsViewOpen(false)}
-      >
-        <div
-          className="bg-white rounded-3xl w-[95%] max-w-6xl max-h-[90vh] overflow-y-auto p-6 relative"
-          onClick={(e) => e.stopPropagation()}
-        >  <div className="flex items-center gap-4">
-        <h2 className="text-2xl font-black text-emerald-900 uppercase">
-            Sale / {122}
-        </h2>
-        </div>
-        <div 
-                  className="flex absolute top-4 right-4 items-center gap-2 px-4 py-2"
->
-
-         <button 
-                 className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
-
-              onClick={()=> {window.print()}}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-            </button>
-      {/* Close Button */}
-      <button
-        onClick={() => setIsViewOpen(false)}
-        className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100"
-      >
-        ✕
-      </button>
-</div>
-      <div className="grid py-2">
-
-
-        {/* Right Section */}
-        <div className="space-y-6">
-          <div className="bg-white rounded-2xl py-2 shadow-sm">
-      {/* Form Info */}
-      <div className="grid grid-cols-1 py-3 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { label: 'Requested By', value: formInfo.createdBy, field: 'createdBy' },
-          { label: 'Service Center', value: formInfo.serviceCenter, field: 'serviceCenter' },
-          { label: 'Manager', value: formInfo.manager, field: 'manager' },
-          { label: 'Date', value: formInfo.date, field: 'date', type: 'date' }
-        ].map((info, i) => (
-          <div key={i} className="flex flex-col">
-            <label className="text-xs font-black uppercase text-gray-400">{info.label}</label>
-            <input
-              type={info.type || 'text'}
-              value={info.value}
-              onChange={e => setFormInfo({...formInfo, [info.field]: e.target.value})}
-              className="mt-1 p-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
-            />
-          </div>
-        ))}
-      </div>
-
-
-      {/* Products Table */}
-      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-visible">
-      <table className="w-full text-left">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-xs font-black text-gray-400 uppercase tracking-wider">Product</th>
-              <th className="px-6 py-3 text-xs font-black text-gray-400 uppercase tracking-wider">SKU</th>
-              <th className="px-6 py-3 text-xs font-black text-gray-400 uppercase tracking-wider">Quantity</th>
-              <th className="px-6 py-3 text-xs font-black text-gray-400 uppercase tracking-wider">Unit Price</th>
-              <th className="px-6 py-3 text-xs font-black text-gray-400 uppercase tracking-wider">Amount</th>
-              <th className="px-6 py-3 text-xs font-black text-gray-400 uppercase tracking-wider">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {products.map(p => (
-              <tr key={p.id} className="hover:bg-gray-50 transition-colors">
-                <td className="px-6 py-3">
-                  <Select
-                    options={productOptions}
-                    value={productOptions.find(opt => opt.value === p.name)}
-                    onChange={(selected) => updateProduct(p.id, 'name', selected.value)}
-                    className="w-full text-sm"
-                    classNamePrefix="select"
-                    isSearchable
-                  />
-                </td>
-                <td className="px-6 py-3 text-sm">{p.sku}</td>
-                <td className="px-6 py-3">
-                  <input
-                    type="number"
-                    min="1"
-                    value={p.quantity}
-                    onChange={e => updateProduct(p.id, 'quantity', parseInt(e.target.value))}
-                    className="w-20 p-1 border rounded-lg text-sm"
-                  />
-                </td>
-                <td className="px-6 py-3">
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={p.unitPrice}
-                    onChange={e => updateProduct(p.id, 'unitPrice', parseFloat(e.target.value))}
-                    className="w-24 p-1 border rounded-lg text-sm"
-                  />
-                </td>
-                <td className="px-6 py-3 text-sm font-bold text-emerald-700">
-                  ${(p.quantity * p.unitPrice).toFixed(2)}
-                </td>
-                <td className="px-6 py-3">
-                  <button type="button" onClick={() => removeProductRow(p.id)} className="text-red-600 text-xs font-bold">Remove</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot className="bg-emerald-50/40 border-t-2 border-emerald-100">
-            <tr>
-              <td colSpan={4} className="px-6 py-3 text-right text-xs font-black uppercase text-gray-600">Total</td>
-              <td className="px-6 py-3 font-bold text-emerald-800">${calculateTotal().toFixed(2)}</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-      <button type="button" onClick={addProductRow} className="px-4 py-2 my-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold hover:bg-gray-100 transition">Add Product</button>
-
-      {/* Remarks */}
-      <div>
-        <label className="block text-xs font-black uppercase text-gray-400">Remarks</label>
-        <textarea
-          value={remarks}
-          onChange={e => setRemarks(e.target.value)}
-          className="w-full mt-2 p-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-none text-sm"
-          placeholder="Enter any internal notes or comments..."
-          rows={4}
-        />
-      </div>
-
-      <button type="button"  className="px-4 py-2 my-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold hover:bg-gray-100 transition">SAVE</button>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
-
+      <SaleViewModal
+        isOpen={isViewOpen}
+        onClose={() => setIsViewOpen(false)}
+        selectedSale={selectedSale}
+        formInfo={formInfo}
+        setFormInfo={setFormInfo}
+        products={products}
+        productOptions={productOptions}
+        updateProduct={updateProduct}
+        addProductRow={addProductRow}
+        removeProductRow={removeProductRow}
+        calculateTotal={calculateTotal}
+        remarks={remarks}
+        setRemarks={setRemarks}
+      />
     </div>
   );
 };
