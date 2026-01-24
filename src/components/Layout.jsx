@@ -105,6 +105,7 @@ const Layout = () => {
               active={isActive('/batches')}
               icon={<FiLayers />} 
               component={<Link to="/batches" />}
+              title="visible to all"
               data-testid="tab-batches"
             >
               Batches
@@ -113,6 +114,7 @@ const Layout = () => {
             <MenuItem 
               active={isActive('/demands')}
               icon={<FiFileText />} 
+              title="demands visible to respective services center"
               component={<Link to="/demands" />}
               data-testid="tab-demands"
             >
@@ -122,6 +124,7 @@ const Layout = () => {
             <MenuItem 
               active={isActive('/products')}
               icon={<FiBox />} 
+              title="Visible to all"
               component={<Link to="/products" />}
               data-testid="tab-products"
             >
@@ -131,6 +134,7 @@ const Layout = () => {
             <MenuItem 
               active={isActive('/sales')}
               icon={<FiBarChart2 />} 
+              title="sales visible to respective services center"
               component={<Link to="/sales" />}
               data-testid="tab-sales"
             >
@@ -140,6 +144,7 @@ const Layout = () => {
             <MenuItem 
               active={isActive('/claims')}
               icon={<FiShieldOff />} 
+              title="claims visible to respective services center"
               component={<Link to="/claims" />}
               data-testid="tab-claim"
             >

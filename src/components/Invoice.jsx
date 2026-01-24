@@ -62,7 +62,7 @@ const Invoice = ({
 
             <div className="grid grid-cols-3">
               <div className="bg-[#446b30] text-white text-[10px] font-bold p-2">
-                Address
+                Motor Number
               </div>
               <div className="col-span-2 p-2">
                 {invoice.address}
@@ -91,7 +91,7 @@ const Invoice = ({
 
             <div className="grid grid-cols-3">
               <div className="bg-[#446b30] text-white text-[10px] font-bold p-2">
-                Reg No
+                Purchase Date
               </div>
               <div className="col-span-2 p-2">
                 {invoice.regNo}
@@ -101,12 +101,19 @@ const Invoice = ({
             {isClaim && (
               <div className="grid grid-cols-3">
                 <div className="bg-[#446b30] text-white text-[10px] font-bold p-2">
+                  Chassis No
+                </div>
+                <div className="col-span-2 p-2">
+                  123456
+                </div>
+                <div className="bg-[#446b30] text-white text-[10px] font-bold p-2">
                   Approved
                 </div>
                 <div className="col-span-2 p-2 font-bold">
                   {claim?.isApproved ? "APPROVED" : "NOT APPROVED"}
                 </div>
               </div>
+
             )}
           </div>
         </div>
