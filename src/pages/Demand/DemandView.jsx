@@ -8,9 +8,11 @@ import {
   CheckCircle2,
   Clock,
   ArrowLeft,
-  Info
+  Info,
+  X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import {MOCK_BATCH, MOCK_PRODUCTS} from '../../MockData.jsx';
 
 // --- Mock Data ---
 
@@ -62,6 +64,28 @@ const DemandView = () => {
     navigate(-1); // goes back to previous page
     // OR navigate('/demands') if you want to go to a specific route
   };
+  const [newProduct, setNewProduct] = useState(null);
+  const [newQuantity, setNewQuantity] = useState('');
+  
+  // Method
+  const handleAddProductRow = () => {
+    if (!newProduct || !newQuantity) return;
+  
+    const productToAdd = {
+      ...newProduct,
+      quantity: Number(newQuantity),
+    };
+  
+    setDemand(prev => ({
+      ...prev,
+      products: [...prev.products, productToAdd]
+    }));
+  
+    setNewProduct(null);
+    setNewQuantity('');
+  };
+  
+
   const calculateTotal = () => {
     return demand.products.reduce((acc, curr) => acc + (curr.quantity * curr.unitPrice), 0);
   };
@@ -126,6 +150,51 @@ const DemandView = () => {
               <h3 className="font-black text-gray-800 tracking-tight text-sm uppercase">Demanded Inventory Items</h3>
             </div>
             <div className="overflow-x-auto">
+
+                          {/* Add Product Row */}
+                          <div className="px-6 py-4 border-b bg-gray-50/20 flex items-center gap-3">
+                            <select
+                              value={newProduct?.id || ''}
+                              onChange={(e) => {
+                                const prod = MOCK_PRODUCTS.find(p => p.id === e.target.value);
+                                setNewProduct(prod);
+                                setNewQuantity('');
+                              }}
+                              className="flex-1 p-2 border rounded"
+                            >
+                              <option value="">Select Product</option>
+                              {MOCK_PRODUCTS.map((p) => (
+                                <option key={p.id} value={p.id}>{p.name}</option>
+                              ))}
+                            </select>
+              
+                            <input
+                              type="text"
+                              readOnly
+                              placeholder="SKU"
+                              value={newProduct?.sku || ''}
+                              className="w-32 p-2 border rounded bg-gray-100"
+                            />
+              
+                            <input
+                              type="number"
+                              placeholder="Quantity"
+                              value={newQuantity || ''}
+                              onChange={(e) => setNewQuantity(e.target.value)}
+                              className=" p-2 border rounded"
+                            />
+              
+                            <span className="w-32 text-right font-bold">
+                              {newProduct ? `$${(newProduct.unitPrice * (newQuantity || 0)).toFixed(2)}` : '$0.00'}
+                            </span>
+              
+                            <button
+                              onClick={handleAddProductRow}
+                              className="px-4 py-2 bg-emerald-600 text-white rounded-lg font-bold text-xs"
+                            >
+                              Save
+                            </button>
+                          </div>
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-gray-50/50">
@@ -140,13 +209,13 @@ const DemandView = () => {
                     <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center bg-gray-50 border">
-  <img
-    src={`https://picsum.photos/40`} 
-    alt={product.name}
-    className="w-full h-full object-cover"
-  />
-</div>
+                          <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center bg-gray-50 border">
+                            <img
+                              src={`https://picsum.photos/40`} 
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
 
                           <div>
                             <div className="text-sm font-bold text-gray-900">{product.name}</div>
@@ -162,6 +231,21 @@ const DemandView = () => {
                       </td>
                       <td className="px-6 py-4 text-right font-bold text-emerald-700 text-sm">
                         ${(product.quantity * product.unitPrice).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      </td>
+                      {/* DELETE BUTTON */}
+                      <td className="px-4 py-4 text-center">
+                        <button
+                          onClick={() => {
+                            setDemand(prev => ({
+                              ...prev,
+                              products: prev.products.filter(p => p.id !== product.id)
+                            }));
+                          }}
+                          className="text-red-600 hover:text-red-800"
+                          title="Delete Product"
+                        >
+                          <X size={16} />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -197,7 +281,7 @@ const DemandView = () => {
                 { icon: <Calendar size={16} />, label: 'Date Created', value: demand.createdAt }
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-[#FFEDD5] text-[#EA580B] flex items-center justify-center shrink-0">
                     {item.icon}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -247,7 +331,7 @@ const DemandView = () => {
                 <button 
                   type="submit"
                   disabled={!newRemark.trim()}
-                  className="w-full py-3 bg-[#051c14] text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#0a2c20] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="w-full py-3 bg-[#FFEDD5] text-[#EA580B] rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-[#0a2c20] transition-all"
                 >
                   <Send size={14} />
                   Submit Remark

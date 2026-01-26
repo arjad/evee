@@ -1,271 +1,70 @@
-
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Filter from "../../components/Filter";
 import Heading from '../../components/TopHeading';
+import InvoicePreview from '../../components/Invoice';
+import { INITIAL_INVOICES, selectedClaim, selectedInvoice2} from '../../MockData';
 import { 
-  ArrowLeft,
-} from 'lucide-react';
-import {INITIAL_INVOICES} from '../../MockData';
-
+  X,
+  Printer,
+} from 'lucide-react'
 
 const Invoices = () => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("details");
+  const [selectedClaims, setSelectedClaim] = useState(null);
   const [invoices, setInvoices] = useState(INITIAL_INVOICES);
   const [selectedId, setSelectedId] = useState(null);
-
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [dateFilter, setDateFilter] = useState('THIS_MONTH');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
+  const [statusFilter, setStatusFilter] = useState([]);
   const selectedInvoice = invoices.find(inv => inv.id === selectedId);
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-PK', { style: 'currency', currency: 'PKR', maximumFractionDigits: 0 }).format(amount);
+  const formatCurrency = (amount) =>
+    new Intl.NumberFormat('en-PK', {
+      style: 'currency',
+      currency: 'PKR',
+      maximumFractionDigits: 0
+    }).format(amount);
+
+  const toggleFilters = () => {
+    setIsFilterOpen(prev => {
+      if (prev) clearFilters();
+      return !prev;
+    });
   };
 
-  const handlePrint = () => {
-    window.print();
+  const clearFilters = () => {
+    setDateFilter('THIS_MONTH');
+    setFromDate('');
+    setToDate('');
+    setStatusFilter([]);
   };
+
+  const handlePrint = () => window.print();
 
   const handleDownload = () => {
-    // To ensure the saved file has a relevant name when using "Save as PDF"
     const originalTitle = document.title;
     document.title = `Invoice_${selectedInvoice.id}_${selectedInvoice.customerName.replace(/\s+/g, '_')}`;
     window.print();
-    // Revert title after printing starts (dialog is usually blocking or near-instant)
-    setTimeout(() => {
-      document.title = originalTitle;
-    }, 100);
+    setTimeout(() => (document.title = originalTitle), 100);
   };
 
   const handleApprove = () => {
-    setInvoices(prev => prev.map(inv => 
-      inv.id === selectedId 
-        ? { ...inv, approvedBy: 'John Doe', status: 'Paid' } 
-        : inv
-    ));
-  };
-    const navigate = useNavigate();
-      const [isFilterOpen, setIsFilterOpen] = useState(false);
-      const [dateFilter, setDateFilter] = useState('THIS_MONTH');
-      const [fromDate, setFromDate] = useState('');
-      const [toDate, setToDate] = useState('');
-      const [statusFilter, setStatusFilter] = useState([]);
-    const toggleFilters = () => {
-      setIsFilterOpen(prev => {
-        if (prev) {
-          // panel is closing → clear filters
-          clearFilters();
-        }
-        return !prev;
-      });
-    };
-    const clearFilters = () => {
-      setDateFilter('THIS_MONTH');
-      setFromDate('');
-      setToDate('');
-      setStatusFilter([]);
-    };
-  const handleBack = () => {
-    navigate(-1);
-  };
-  if (selectedInvoice) {
-    return (
-      <div className="space-y-6 animate-in fade-in duration-300">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
-      <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-black text-emerald-900 uppercase">
-            Invoices
-          </h2>
-
-      </div>
-
-          <div className="flex items-center gap-2">
-          <button 
-            onClick={handleBack}
-            className="px-4 py-2 border rounded-lg font-bold text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2 text-sm"
-          >
-            <ArrowLeft size={16} />
-            Back
-          </button>
-            <button 
-              onClick={handlePrint}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-slate-700 hover:bg-gray-50 transition-colors shadow-sm"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-              Print
-            </button>
-            <button 
-              onClick={handleDownload}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-semibold text-slate-700 hover:bg-gray-50 transition-colors shadow-sm"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-              Download PDF
-            </button>
-            {!selectedInvoice.approvedBy && (
-              <button 
-                onClick={handleApprove}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors shadow-md shadow-green-100"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Approve Invoice
-              </button>
-            )}
-            {selectedInvoice.approvedBy && (
-              <div className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-lg text-sm font-bold">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
-                Verified Approved
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Digital Recreation of the Paper Invoice */}
-        <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-sm border border-gray-200 overflow-hidden text-slate-800 invoice-container">
-          <div className="p-8 md:p-12 space-y-8">
-            
-            {/* Invoice Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-[#a3c639] rounded-full flex flex-col items-center justify-center text-white font-bold text-[10px] leading-tight">
-                  <span className="mb-[-2px]">evee</span>
-                  <span>evee</span>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none uppercase">EVEE Electric</h3>
-                  <p className="text-lg font-bold text-[#446b30] mt-1">Service Center Invoice</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Branch Name</p>
-                <p className="text-xl font-bold border-b-2 border-[#a3c639] pb-1 text-slate-800 inline-block min-w-[150px]">{selectedInvoice.branch}</p>
-              </div>
-            </div>
-
-            {/* Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 border border-gray-300">
-              <div className="divide-y divide-gray-300 border-r border-gray-300">
-                <div className="grid grid-cols-3">
-                  <div className="bg-[#446b30] text-white text-[10px] font-bold p-2 uppercase flex items-center">Invoice No:</div>
-                  <div className="col-span-2 p-2 font-bold text-green-700">{selectedInvoice.id}</div>
-                </div>
-                <div className="grid grid-cols-3">
-                  <div className="bg-[#446b30] text-white text-[10px] font-bold p-2 uppercase flex items-center">Customer Name:</div>
-                  <div className="col-span-2 p-2 font-semibold italic text-slate-700">{selectedInvoice.customerName}</div>
-                </div>
-                <div className="grid grid-cols-3">
-                  <div className="bg-[#446b30] text-white text-[10px] font-bold p-2 uppercase flex items-center">Address:</div>
-                  <div className="col-span-2 p-2 text-sm text-slate-600">{selectedInvoice.address}</div>
-                </div>
-                <div className="grid grid-cols-3">
-                  <div className="bg-[#446b30] text-white text-[10px] font-bold p-2 uppercase flex items-center">Scooter Model:</div>
-                  <div className="col-span-2 p-2 font-medium">{selectedInvoice.scooterModel}</div>
-                </div>
-              </div>
-              <div className="divide-y divide-gray-300">
-                <div className="grid grid-cols-3">
-                  <div className="bg-[#446b30] text-white text-[10px] font-bold p-2 uppercase flex items-center">Date:</div>
-                  <div className="col-span-2 p-2 font-medium italic">{selectedInvoice.date}</div>
-                </div>
-                <div className="grid grid-cols-3">
-                  <div className="bg-[#446b30] text-white text-[10px] font-bold p-2 uppercase flex items-center">Phone:</div>
-                  <div className="col-span-2 p-2 text-slate-600">03xx-xxxxxxx</div>
-                </div>
-                <div className="grid grid-cols-3">
-                  <div className="bg-[#446b30] text-white text-[10px] font-bold p-2 uppercase flex items-center">Reg No:</div>
-                  <div className="col-span-2 p-2 font-medium">{selectedInvoice.regNo}</div>
-                </div>
-                <div className="grid grid-cols-3">
-                  <div className="bg-[#446b30] text-white text-[10px] font-bold p-2 uppercase flex items-center">Service Date:</div>
-                  <div className="col-span-2 p-2 font-medium italic">{selectedInvoice.serviceDate}</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Items Table */}
-            <div className="border border-gray-300">
-              <div className="grid grid-cols-12 bg-[#446b30] text-white text-[10px] font-bold uppercase tracking-wider">
-                <div className="col-span-1 p-2 border-r border-white/20 text-center">S.No</div>
-                <div className="col-span-6 p-2 border-r border-white/20">Service / Item Description</div>
-                <div className="col-span-1 p-2 border-r border-white/20 text-center">Qty</div>
-                <div className="col-span-2 p-2 border-r border-white/20 text-right">Unit Price</div>
-                <div className="col-span-2 p-2 text-right">Total</div>
-              </div>
-              <div className="divide-y divide-gray-100 min-h-[250px] relative">
-                {selectedInvoice.items.map((item, idx) => (
-                  <div key={item.id} className="grid grid-cols-12 text-sm font-medium">
-                    <div className="col-span-1 p-3 border-r border-gray-100 text-center">{idx + 1}</div>
-                    <div className="col-span-6 p-3 border-r border-gray-100 italic text-slate-700">{item.desc}</div>
-                    <div className="col-span-1 p-3 border-r border-gray-100 text-center">{item.qty}</div>
-                    <div className="col-span-2 p-3 border-r border-gray-100 text-right">{item.price.toLocaleString()}</div>
-                    <div className="col-span-2 p-3 text-right font-bold">{item.total.toLocaleString()}/-</div>
-                  </div>
-                ))}
-                {/* Visual placeholders for empty rows */}
-                {[...Array(5)].map((_, i) => (
-                  <div key={`empty-${i}`} className="grid grid-cols-12 h-10">
-                    <div className="col-span-1 border-r border-gray-100"></div>
-                    <div className="col-span-6 border-r border-gray-100"></div>
-                    <div className="col-span-1 border-r border-gray-100"></div>
-                    <div className="col-span-2 border-r border-gray-100"></div>
-                    <div className="col-span-2"></div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Totals Section */}
-            <div className="flex justify-end">
-              <div className="w-full md:w-1/2 border border-gray-300 divide-y divide-gray-300">
-                <div className="grid grid-cols-2">
-                  <div className="bg-[#a3c639]/10 text-[10px] font-bold p-2 uppercase text-[#446b30] flex items-center">Subtotal</div>
-                  <div className="p-2 text-right font-medium">{selectedInvoice.total.toLocaleString()}/-</div>
-                </div>
-                <div className="grid grid-cols-2">
-                  <div className="bg-[#a3c639]/10 text-[10px] font-bold p-2 uppercase text-[#446b30] flex items-center">Discount</div>
-                  <div className="p-2 text-right font-medium">0/-</div>
-                </div>
-                <div className="grid grid-cols-2 bg-gray-50">
-                  <div className="bg-[#446b30] text-white text-xs font-bold p-2 uppercase flex items-center">Grand Total</div>
-                  <div className="p-2 text-right text-xl font-black text-slate-900">{selectedInvoice.total.toLocaleString()}/-</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Footer Notes */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 text-[11px] text-slate-600 leading-tight">
-              <div>
-                <p className="font-bold mb-1">Note: Warranty claims will only be entertained with original invoice.</p>
-                <p className="italic text-green-700 font-semibold">Thank you for visiting EVEE Service Center.</p>
-                <div className="flex gap-4 mt-2 font-bold text-green-700">
-                  <span>Go Green</span>
-                  <span>Ride Electric</span>
-                  <span>Save Future</span>
-                </div>
-                <div className="mt-4 space-y-1">
-                  <p className="font-bold text-slate-800 underline">Terms & Conditions:</p>
-                  <p>1. Goods once sold are not returnable.</p>
-                  <p>2. Warranty claims must be supported with this bill.</p>
-                  <p>3. Company is not responsible for improper installation of mishandling.</p>
-                </div>
-              </div>
-              <div className="flex flex-col items-end justify-end space-y-4">
-                <div className="text-right">
-                  <p className="font-bold text-slate-800 uppercase tracking-widest text-[10px] mb-8">Prepared By:</p>
-                  <div className="w-48 border-b-2 border-gray-400 pb-2 relative">
-                    <span className={`absolute -top-10 right-4 font-handwriting transform -rotate-6 text-3xl whitespace-nowrap ${selectedInvoice.approvedBy ? 'text-blue-700 font-bold opacity-100' : 'text-slate-400 opacity-30 italic'}`}>
-                      {selectedInvoice.approvedBy || "Amanat"}
-                    </span>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase">Authorised Signature & Stamp</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
+    setInvoices(prev =>
+      prev.map(inv =>
+        inv.id === selectedId
+          ? { ...inv, approvedBy: 'John Doe', status: 'Paid' }
+          : inv
+      )
     );
-  }
+  };
 
   return (
     <div className="space-y-6">
+
       {/* Header */}
       <Heading
         title="Invoice"
@@ -274,11 +73,13 @@ const Invoices = () => {
         newButtonText="New Invoice"
       />
 
+      {/* Filters */}
       <div
         className={`overflow-hidden transition-all duration-500 ease-in-out transform ${
           isFilterOpen ? 'max-h-96 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-4'
         }`}
-      >  <Filter
+      >
+        <Filter
           dateFilter={dateFilter}
           setDateFilter={setDateFilter}
           fromDate={fromDate}
@@ -290,6 +91,7 @@ const Invoices = () => {
         />
       </div>
 
+      {/* Invoice Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 no-print">
         {invoices.map((inv) => (
           <div 
@@ -297,8 +99,9 @@ const Invoices = () => {
             className="group flex flex-col p-6 rounded-2xl bg-white shadow-sm border border-slate-200 hover:shadow-xl hover:border-green-300 transition-all cursor-pointer relative overflow-hidden"
             onClick={() => setSelectedId(inv.id)}
           >
-            {/* Status Badge */}
-            <div className={`absolute top-0 right-0 px-3 py-1 rounded-bl-xl text-[10px] font-bold uppercase tracking-wider ${inv.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+            <div className={`absolute top-0 right-0 px-3 py-1 rounded-bl-xl text-xs font-bold
+              ${inv.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}
+            >
               {inv.status}
             </div>
 
@@ -349,6 +152,247 @@ const Invoices = () => {
           </div>
         ))}
       </div>
+      {/* ================= MODAL ================= */}
+      {selectedInvoice && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-[2.5rem] max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-in fade-in zoom-in-95 duration-300 relative">
+            <div className="flex items-center justify-between px-8 py-6 border-b border-slate-50 no-print">
+              <Heading
+                title="Invoices / invoice 1"
+                backBtn={false}
+              />
+
+              <div className="flex items-center gap-2">
+                <button
+                    className="h-10 w-10 flex items-center justify-center rounded-2xl bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all shadow-sm"
+                    title="Print Claim"
+                >
+                  <Printer size={15} />
+                </button>
+                <button 
+                  onClick={handleDownload}
+                  className="h-10 w-10 flex items-center justify-center rounded-2xl bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all shadow-sm"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                </button>
+                <button
+                  onClick={() => setSelectedId(null)}
+                  className="h-10 w-10 flex items-center justify-center rounded-2xl bg-slate-100 hover:bg-emerald-50"
+                >
+                  <X size={15} />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex gap-6 items-center mb-6 border-b border-slate-200 px-8">
+              <button
+                onClick={() => setActiveTab('details')}
+                className={`pb-2 text-lg font-semibold border-b-2 transition ${
+                  activeTab === 'details'
+                    ? 'border-green-600 text-green-700'
+                    : 'border-transparent text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                Details
+              </button>
+
+              <button
+                onClick={() => setActiveTab('invoice')}
+                className={`pb-2 text-lg font-semibold border-b-2 transition ${
+                  activeTab === 'invoice'
+                    ? 'border-green-600 text-green-700'
+                    : 'border-transparent text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                Invoice
+              </button>
+            </div>
+            {/* Scrollable Content Container */}
+            <div className="flex-1 overflow-y-auto p-8 pt-0 custom-scrollbar">
+              
+              {/* DETAILS TAB */}
+              {activeTab === 'details' && (
+                <div className="flex justify-center pb-5">
+                  <div className="w-full max-w-[800px] border-slate-100 rounded-lg relative">
+                    <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                      {/* Product Image */}
+                      <div className="rounded-2xl overflow-hidden shadow-lg">
+                        <img 
+                          src={selectedClaim.productImage} 
+                          alt={selectedClaim.description} 
+                          className="w-full h-60 object-cover"
+                        />
+                      </div>
+
+                      {/* Approved By / Service Center */}
+                      <div className="grid grid-cols-1 gap-4">
+                        <div className="bg-white border-left-gray-300 border-left p-4">
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="text-[10px] font-bold p-2 uppercase flex items-center">Approved By</div>
+                            <div className="col-span-2 p-2">
+                              <input
+                                type="text"
+                                value={selectedClaim.approvedBy || ''}
+                                onChange={(e) => setSelectedClaim({...selectedClaim, approvedBy: e.target.value})}
+                                className="w-full p-1 border rounded"
+                              />
+                            </div>
+                            <div className="text-[10px] font-bold p-2 uppercase flex items-center">Service Center</div>
+                            <div className="col-span-2 p-2">
+                              <input
+                                type="text"
+                                value={selectedClaim.serviceCenter || ''}
+                                onChange={(e) => setSelectedClaim({...selectedClaim, serviceCenter: e.target.value})}
+                                className="w-full p-1 border rounded"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Info Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 border border-gray-300 mb-5">
+                      <div className="divide-y divide-gray-300 border-r border-gray-300">
+                        {[
+                          { label: "Claim ID", key: "id", readOnly: true },
+                          { label: "Customer Name", key: "customerName" },
+                          { label: "Address", key: "address" },
+                          { label: "Claim Date", key: "claimDate" }
+                        ].map((item, idx) => (
+                          <div key={idx} className="grid grid-cols-3">
+                            <div className="text-[10px] font-bold p-2 uppercase flex items-center">{item.label}:</div>
+                            <div className="col-span-2 p-2">
+                              <input
+                                type="text"
+                                value={selectedClaim[item.key] || ''}
+                                readOnly={item.readOnly}
+                                onChange={(e) => setSelectedClaim({...selectedClaim, [item.key]: e.target.value})}
+                                className={`w-full p-1 border rounded ${item.readOnly ? 'bg-gray-100' : ''}`}
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="divide-y divide-gray-300">
+                        {[
+                          { label: "Sale ID", key: "saleId" },
+                          { label: "Scooter Model", key: "scooterModel" },
+                          { label: "Service Date", key: "serviceDate" },
+                          { label: "Approval Status", key: "isApproved", type: "checkbox" }
+                        ].map((item, idx) => (
+                          <div key={idx} className="grid grid-cols-3 items-center">
+                            <div className="text-[10px] font-bold p-2 uppercase flex items-center">{item.label}:</div>
+                            <div className="col-span-2 p-2">
+                              {item.type === 'checkbox' ? (
+                                <input
+                                  type="checkbox"
+                                  checked={selectedClaim[item.key]}
+                                  onChange={(e) => setSelectedClaim({...selectedClaim, [item.key]: e.target.checked})}
+                                />
+                              ) : (
+                                <input
+                                  type="text"
+                                  value={selectedClaim[item.key] || ''}
+                                  onChange={(e) => setSelectedClaim({...selectedClaim, [item.key]: e.target.value})}
+                                  className="w-full p-1 border rounded"
+                                />
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Claimed Products */}
+                    <div className="border border-gray-300 mb-4">
+                      <div className="text-xs font-bold p-3 uppercase">
+                        Claimed Products
+                      </div>
+                      <div className="grid grid-cols-4 text-[11px] font-bold bg-gray-100 border-t border-gray-300">
+                        <div className="p-2 border-r">Product Name</div>
+                        <div className="p-2 border-r text-center">Qty</div>
+                        <div className="p-2 border-r text-right">Unit Price</div>
+                        <div className="p-2 text-right">Total</div>
+                      </div>
+                      {selectedClaim.products.map((product, idx) => (
+                        <div key={idx} className="grid grid-cols-4 text-[11px] border-t border-gray-300">
+                          <div className="p-2 border-r italic">
+                            <input
+                              type="text"
+                              value={product.name}
+                              onChange={(e) => {
+                                const products = [...selectedClaim.products];
+                                products[idx].name = e.target.value;
+                                setSelectedClaim({...selectedClaim, products});
+                              }}
+                              className="w-full p-1 border rounded italic"
+                            />
+                          </div>
+                          <div className="p-2 border-r text-center">
+                            <input
+                              type="number"
+                              value={product.quantity}
+                              onChange={(e) => {
+                                const products = [...selectedClaim.products];
+                                products[idx].quantity = parseInt(e.target.value) || 0;
+                                setSelectedClaim({...selectedClaim, products});
+                              }}
+                              className="w-full p-1 border rounded text-center font-bold"
+                            />
+                          </div>
+                          <div className="p-2 border-r text-right">
+                            <input
+                              type="number"
+                              value={product.price}
+                              onChange={(e) => {
+                                const products = [...selectedClaim.products];
+                                products[idx].price = parseFloat(e.target.value) || 0;
+                                setSelectedClaim({...selectedClaim, products});
+                              }}
+                              className="w-full p-1 border rounded text-right"
+                            />
+                          </div>
+                          <div className="p-2 text-right font-semibold">
+                            Rs. {product.quantity * product.price}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border border-gray-300 my-4">
+                      <div className="text-xs font-bold p-3 uppercase">
+                        Remarks
+                      </div>
+                      <textarea
+                        placeholder="Add a remark..."
+                        rows="3"
+                        className="w-full p-2 border rounded resize-none outline-none border-none"
+                      />
+
+                    </div>
+                    <button className="px-6 py-2.5 float-right bg-emerald-600 text-white font-black text-[10px] uppercase rounded-xl">
+                      Save
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'invoice' && (
+                <InvoicePreview
+                  type="CLAIM"
+                  invoice={selectedInvoice2}
+                  claim={selectedClaim}
+                />
+              )}
+
+
+            </div>
+          </div>
+        </div>
+      )}
+    
     </div>
   );
 };

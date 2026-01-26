@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import DataTable from '../components/DataTable';
 import { Link } from 'react-router-dom';
 import Filter from "../components/Filter";
-import { MOCK_DEMANDS,DemandStats, Demand_columns } from '../MockData';
+import { MOCK_DEMANDS,DemandStats, DemandChart, Demand_columns } from '../MockData';
 import Stats from '../components/GeneralStats';
 import Heading from "../components/TopHeading";
 
@@ -88,8 +88,8 @@ const Demands = () => {
           setStatusFilter={setStatusFilter}
         />
       </div>
-
-      <Stats stats={DemandStats}/>
+      
+      <Stats stats={DemandStats} chartData={DemandChart} chartType="bar" />
 
       <DataTable columns={Demand_columns} data={filteredDemands} />
     </div>

@@ -3,8 +3,10 @@ import { Sidebar, Menu, MenuItem, SubMenu, sidebarClasses } from "react-pro-side
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { 
   FiHome, FiBox, FiLayers, FiBarChart2, FiSettings, 
-  FiFileText, FiUsers, FiChevronLeft, FiShieldOff, FiChevronRight 
+  FiFileText, FiChevronLeft, FiShieldOff, FiChevronRight 
 } from "react-icons/fi";
+import { LiaMoneyBillSolid } from "react-icons/lia";
+
 import Header from "./Header";
 import { Container, TextField, Avatar, Box } from "@mui/material";
 
@@ -43,18 +45,17 @@ const Layout = () => {
             <img 
               src="/assets/logo.png" 
               alt="Evee Logo" 
-              className="w-10 h-10 rounded-xl shadow-lg border-2 border-emerald-500/20"
+              className="w-10 rounded-full"
             />
             {!collapsed && (
               <div className="flex flex-col">
                 <span className="text-xl font-bold tracking-tight text-white leading-none">evee</span>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-emerald-400 font-semibold mt-1">Mobility</span>
+                <span className="text-[10px] tracking-[0.2em] text-emerald-400 font-semibold mt-1">I am Evee. Are you?</span>
               </div>
             )}
           </div>
         </div>
 
-        {/* NAVIGATION MENU */}
         <div className="flex-1 overflow-y-auto custom-scrollbar pt-4">
           <Menu
             menuItemStyles={{
@@ -91,121 +92,100 @@ const Layout = () => {
               {!collapsed && "Collapse Sidebar"}
             </MenuItem>
 
-           
             <MenuItem 
-  active={isActive('/dashboard')}
-  icon={<FiHome />} 
-  component={<Link to="/dashboard" />}
-  data-testid="tab-dashboard"
->
-  Dashboard
-</MenuItem>
+              active={isActive('/dashboard')}
+              icon={<FiHome />} 
+              component={<Link to="/dashboard" />}
+              data-testid="tab-dashboard"
+            >
+              Dashboard
+            </MenuItem>
 
-<MenuItem 
-  active={isActive('/batches')}
-  icon={<FiLayers />} 
-  component={<Link to="/batches" />}
-  data-testid="tab-batches"
->
-  Batches
-</MenuItem>
+            <MenuItem 
+              active={isActive('/batches')}
+              icon={<FiLayers />} 
+              component={<Link to="/batches" />}
+              title="visible to all"
+              data-testid="tab-batches"
+            >
+              Batches
+            </MenuItem>
 
-<MenuItem 
-  active={isActive('/demands')}
-  icon={<FiFileText />} 
-  component={<Link to="/demands" />}
-  data-testid="tab-demands"
->
-  Demands
-</MenuItem>
+            <MenuItem 
+              active={isActive('/demands')}
+              icon={<FiFileText />} 
+              title="demands visible to respective services center"
+              component={<Link to="/demands" />}
+              data-testid="tab-demands"
+            >
+              Demands
+            </MenuItem>
 
-<MenuItem 
-  active={isActive('/products')}
-  icon={<FiBox />} 
-  component={<Link to="/products" />}
-  data-testid="tab-products"
->
-  Products
-</MenuItem>
+            <MenuItem 
+              active={isActive('/products')}
+              icon={<FiBox />} 
+              title="Visible to all"
+              component={<Link to="/products" />}
+              data-testid="tab-products"
+            >
+              Products
+            </MenuItem>
 
-<MenuItem 
-  active={isActive('/sales')}
-  icon={<FiBarChart2 />} 
-  component={<Link to="/sales" />}
-  data-testid="tab-sales"
->
-  Sales
-</MenuItem>
+            <MenuItem 
+              active={isActive('/sales')}
+              icon={<FiBarChart2 />} 
+              title="sales visible to respective services center"
+              component={<Link to="/sales" />}
+              data-testid="tab-sales"
+            >
+              Sales
+            </MenuItem>
 
-<MenuItem 
-  active={isActive('/claims')}
-  icon={<FiShieldOff />} 
-  component={<Link to="/claims" />}
-  data-testid="tab-claim"
->
-  Claim
-</MenuItem>
+            <MenuItem 
+              active={isActive('/claims')}
+              icon={<FiShieldOff />} 
+              title="claims visible to respective services center"
+              component={<Link to="/claims" />}
+              data-testid="tab-claim"
+            >
+              Claim
+            </MenuItem>
 
-<div className="h-px bg-white/5 my-4 mx-6"></div>
-
-
-<MenuItem 
-  active={isActive('/invoices')}
-  icon={<FiFileText />} 
-  component={<Link to="/invoices" />}
-  data-testid="tab-invoices"
->
-  Invoices
-</MenuItem>
-
-<MenuItem 
-  active={isActive('/settings')}
-  icon={<FiSettings />} 
-  component={<Link to="/settings" />}
-  data-testid="tab-settings"
->
-  Settings
-</MenuItem>
+            <div className="h-px bg-white/5 my-4 mx-6"></div>
 
 
+            <MenuItem 
+              active={isActive('/invoices')}
+              icon={<LiaMoneyBillSolid />} 
+              component={<Link to="/invoices" />}
+              data-testid="tab-invoices"
+            >
+              Invoices
+            </MenuItem>
 
-
-
-           
+            <MenuItem 
+              active={isActive('/settings')}
+              icon={<FiSettings />} 
+              component={<Link to="/settings" />}
+              data-testid="tab-settings"
+            >
+              Settings
+            </MenuItem>
           </Menu>
         </div>
-
-        {/* FOOTER INFO */}
-        {!collapsed && (
-          <div className="p-6 bg-black/20 mt-auto">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
-              </div>
-              <div>
-                <p className="text-[10px] text-emerald-400/80 uppercase font-bold tracking-wider">System Status</p>
-                <p className="text-xs text-white">All Systems Normal</p>
-              </div>
-            </div>
-          </div>
-        )}
       </Sidebar>
-{/* GRADIENT ACCENT */}
-<div
-  className="absolute bottom-0 right-0 w-32 h-32 pointer-events-none rounded-tl-full"
-  style={{
-    background: "linear-gradient(135deg, rgba(255,255,0,0.3), transparent 70%)",
-  }}
-></div>
+      <div
+        className="absolute bottom-0 right-0 w-32 h-32 pointer-events-none rounded-tl-full"
+      ></div>
 
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
         <Header />
         <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
           <div className="max-w-7xl mx-auto space-y-6">
-          <Container
-      style={{ display: "flex", flexDirection:"column", minHeight: "100vh", padding: 0 }}
-    >
-            <Outlet />
+            <Container
+              style={{ display: "flex", flexDirection:"column", minHeight: "100vh", padding: 0 }}
+            >
+              <Outlet />
             </Container>
           </div>
         </main>
