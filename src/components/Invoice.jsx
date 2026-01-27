@@ -29,14 +29,22 @@ const Invoice = ({
             </div>
           </div>
 
-          <div className="text-right">
-            <p className="text-xs font-bold uppercase text-slate-500">
-              Branch
-            </p>
-            <p className="text-xl font-bold border-b-2 border-[#a3c639]">
-              Serivce Center 1
-            </p>
-          </div>
+          <div className="ml-auto flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-xs font-bold uppercase text-slate-500">
+                  Service Center
+                </p>
+                <p className="text-md font-bold border-b-2 border-[#a3c639] whitespace-nowrap">
+                  Johar Town Service Center
+                </p>
+              </div>
+
+              <img
+                src="/assets/QR.png"
+                alt="Service Center QR"
+                className="w-20 h-20 object-contain border rounded"
+              />
+            </div>
         </div>
 
         {/* ===== INFO GRID ===== */}

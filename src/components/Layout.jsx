@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, createContext } from "react";
 import { Sidebar, Menu, MenuItem, SubMenu, sidebarClasses } from "react-pro-sidebar";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { 
@@ -9,6 +9,11 @@ import { LiaMoneyBillSolid } from "react-icons/lia";
 
 import Header from "./Header";
 import { Container, TextField, Avatar, Box } from "@mui/material";
+  // Create context
+export const RoleContext = createContext({
+  isAdmin: true,
+  toggleUserRole: () => {},
+});
 
 const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -16,7 +21,23 @@ const Layout = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  const [isAdmin, setIsAdmin] = useState(() => {
+    const savedRole = localStorage.getItem("isAdmin");
+    return savedRole ? JSON.parse(savedRole) : true; // default Admin
+  });
+
+
+  const toggleUserRole = () => {
+    setIsAdmin(prev => {
+      const newRole = !prev;
+      localStorage.setItem("isAdmin", JSON.stringify(newRole));
+      return newRole;
+    });
+  };
+
+
   return (
+    <RoleContext.Provider value={{ isAdmin, toggleUserRole }}>
     <div className="flex min-h-screen bg-gray-50"
     // style={{
 
@@ -100,16 +121,16 @@ const Layout = () => {
             >
               Dashboard
             </MenuItem>
-
-            <MenuItem 
-              active={isActive('/batches')}
-              icon={<FiLayers />} 
-              component={<Link to="/batches" />}
-              title="visible to all"
-              data-testid="tab-batches"
-            >
-              Batches
-            </MenuItem>
+            {isAdmin && (
+              <MenuItem 
+                active={isActive('/batches')}
+                icon={<FiLayers />} 
+                component={<Link to="/batches" />}
+                data-testid="tab-batches"
+              >
+                Batches
+              </MenuItem>
+            )}
 
             <MenuItem 
               active={isActive('/demands')}
@@ -179,7 +200,12 @@ const Layout = () => {
       ></div>
 
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">
-        <Header />
+        <Header
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+          isAdmin={isAdmin}
+          toggleUserRole={toggleUserRole}
+        />
         <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
           <div className="max-w-7xl mx-auto space-y-6">
             <Container
@@ -191,6 +217,7 @@ const Layout = () => {
         </main>
       </div>
     </div>
+    </RoleContext.Provider>
   );
 };
 
