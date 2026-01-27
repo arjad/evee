@@ -62,8 +62,6 @@ const TopHeading = ({ title, toggleFilters, newButtonLink, newButtonText, backBt
           </button>
         )}
 
-
-
         {toggleFilters && (
           <>
             <input
